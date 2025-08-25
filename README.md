@@ -1,91 +1,120 @@
-# Sahibinden Car Analyzer Platform
+# Sahibinden Car Scraper
 
-Advanced web scraping and analysis system for Turkish automotive marketplace data extraction with real-time filtering capabilities.
+Sahibinden.com'dan araç verilerini çeken ve analiz eden full‑stack proje.
 
-##  Project Highlights
+## Ne Yaptım
 
-Successfully developed a production-ready platform that extracts, processes, and analyzes car listings from Sahibinden.com using parallel scraping architecture and anti-detection mechanisms.
+Sahibinden.com'dan araç ilanlarını otomatik çeken bir sistem geliştirdim. Sitenin bot korumasını aşmak için mobil proxy'ler ve özel bir Chrome extension kullandım. Topladığım verileri PostgreSQL'de sakladım ve filtreleme yapabilen bir web arayüzü oluşturdum.
 
-### Key Achievements
-- **8,865+ car records** extracted and stored in production database
-- **5 parallel scrapers** running simultaneously across 2 machines
-- **85%+ success rate** despite advanced bot protection
-- **Live deployment** at https://ozsahibinden-backend.onrender.com
+**Canlı Site:** [https://ozsahibinden-backend.onrender.com](https://ozsahibinden-backend.onrender.com)
+**Toplanan Veri:** 8.865 araç kaydı
 
-##  Technical Implementation
+## Nasıl Çalışıyor
 
-### Scraping Infrastructure
-- **Dual-PC Architecture**: Distributed scraping across 2 machines for maximum efficiency
-- **Mobile Proxy Rotation**: SOAX (Turkcell/Vodafone) + NodeMaven proxies for IP diversity
-- **Anti-Bot Systems**: Custom Chrome extension for cookie management and detection bypass
-- **SeleniumBase Framework**: Undetected browser automation with stealth features
+### 1. URL Toplama
 
-### Full-Stack Application
-- **Frontend**: Dynamic HTML interface with Tailwind CSS, real-time filtering, responsive tables
-- **Backend**: Express.js REST API with optimized PostgreSQL queries
-- **Database**: PostgreSQL with indexed columns for sub-100ms query performance
-- **Deployment**: Production deployment on Render.com with automated scaling
+`scraping/sahibinden_url_extractor` – Chrome extension ile listing sayfalarından araç URL'lerini toplar.
 
-##  System Components
+### 2. Veri Çekme
 
-### `/backend`
-Express.js API server handling all data operations and client requests
+2 bilgisayarda toplam 5 scraper paralel çalışıyor:
 
-### `/scraping/pc1_scraping`
-Primary scraping cluster with 3 parallel instances using SOAX and NodeMaven proxies
+* **PC1:** 3 scraper (SOAX Vodafone + NodeMaven proxy)
+* **PC2:** 2 scraper (SOAX Turkcell + NodeMaven proxy)
 
-### `/scraping/pc2_scraping`  
-Secondary scraping cluster with 2 parallel instances for load distribution
+Her scraper farklı proxy kullanarak IP banından kaçınıyor.
 
-### `/scraping/sahibinden_url_extractor`
-Chrome extension for efficient URL extraction from listing pages
+### 3. Bot Koruması Atlatma
 
-##  Technical Challenges Solved
+* Mobil proxy'lerle gerçek telefon IP'leri kullanma
+* Cookie temizleme extension'ı (Cloudflare bypass)
+* User‑Agent rotasyonu
+* Rastgele gecikmeler (random delay)
 
-1. **Cloudflare Bypass**: Implemented mobile proxy rotation with mobile IPs
-2. **Rate Limiting**: Distributed load across multiple instances with intelligent delays
-3. **Data Consistency**: Robust parsing system with multiple fallback methods
-4. **Scale Management**: Handled 10K+ URLs with batch processing and auto-restart mechanisms
-5. **Bot Detection**: Custom cookie cleaning and browser fingerprint randomization
+### 4. Web Arayüzü
 
-## 🛠 Tech Stack
+Çekilen verileri görüntülemek için:
 
-**Backend**: Node.js, Express.js, PostgreSQL  
-**Scraping**: Python, SeleniumBase, Chrome Extensions  
-**Frontend**: HTML5, Tailwind CSS, JavaScript  
-**Infrastructure**: Docker, Render.com, GitHub  
-**Proxies**: SOAX Mobile, NodeMaven Mobile
+* Marka, model, yıl, fiyat, şehir, KM filtreleri
+* Responsive tablo
+* Real‑time arama
 
-##  Performance Metrics
+## Kurulum
 
-- Query Response: <100ms average
-- Database Size: 8,865 records
-- Uptime: 99.9% on production
-- Parallel Capacity: 5 concurrent scrapers
-
-##  Installation
+### Backend API
 
 ```bash
-# Backend setup
-cd backend && npm install
+cd backend
+npm install
+# .env dosyasına PostgreSQL bilgilerini gir
 node server.js
-
-# Scraping setup  
-pip install -r requirements.txt
-python scraping/pc1_scraping/sb_audi_auto_restart_clean.py --mercedes
-
-# Environment configuration
-cp .env.example .env
-# Configure database and proxy credentials
 ```
 
-##  Development Timeline
+### Scraping'i Başlatma
 
-**Week 1**: Research & bot detection analysis  
-**Week 2**: Proxy implementation & testing  
-**Week 3**: Parallel scraping architecture  
-**Week 4**: Frontend development & deployment
+```bash
+pip install -r requirements.txt
 
----
+# Proxy bilgilerini dosyalara gir:
+# SOAX: YOUR_SOAX_USERNAME:YOUR_SOAX_PASSWORD
+# NodeMaven: YOUR_NODEMAVEN_USERNAME:YOUR_NODEMAVEN_PASSWORD
 
-*Developed as a comprehensive demonstration of full-stack development, web scraping expertise, and production deployment capabilities.*
+# PC1'de çalıştır:
+python scraping/pc1_scraping/sb_audi_auto_restart_clean.py
+python scraping/pc1_scraping/sb_vodafone_fixed.py
+python scraping/pc1_scraping/sb_nodemaven_vodafone.py
+
+# PC2'de çalıştır:
+python scraping/pc2_scraping/sb_turkcell_updated.py
+python scraping/pc2_scraping/sb_nodemaven_2.py
+```
+
+### Database
+
+PostgreSQL'de `sahibinden_cars` database oluştur. Tablolar otomatik oluşacak.
+
+## Teknik Detaylar
+
+**Scraping**
+
+* SeleniumBase (undetected Chrome)
+* SOAX mobil proxy (Turkcell/Vodafone IP)
+* NodeMaven rotating proxy
+* 5 paralel instance
+
+**Backend**
+
+* Node.js + Express.js
+* PostgreSQL database
+* REST API
+
+**Frontend**
+
+* HTML + Tailwind CSS
+* Vanilla JavaScript
+* Dinamik filtreleme
+
+## Karşılaşılan Zorluklar
+
+1. Cloudflare koruması → Mobil proxy + cookie temizleme ile çözüldü
+2. Rate limiting → Paralel scraper'lar ve gecikmeler
+3. Bot tespiti → Extension ile cookie yönetimi
+4. Veri tutarlılığı → Try‑catch ve fallback parsing
+
+## Dosya Yapısı
+
+```
+backend/                     → Express API server
+scraping/
+  pc1_scraping/             → PC1 scraper'ları (3 adet)
+  pc2_scraping/             → PC2 scraper'ları (2 adet)
+  sahibinden_url_extractor/ → URL toplama extension'ı
+car-analyzer-table.html      → Frontend arayüz
+```
+
+## Notlar
+
+* Proxy'ler ücretli (SOAX ve NodeMaven)
+* Bot tespiti nedeniyle %100 başarı oranı yok (\~%85)
+* Ücretsiz Render hosting bazen yavaş olabiliyor
+* Database'de 8.865 araç var (bütçe limitinden dolayı)
