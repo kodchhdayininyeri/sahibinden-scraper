@@ -1,0 +1,2341 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahibinden Araç Analiz - Tablo Görünüm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .damage-badge-green { background: #10b981; color: white; }
+        .damage-badge-yellow { background: #f59e0b; color: white; }
+        .damage-badge-red { background: #ef4444; color: white; }
+        .hover-row:hover { background: #f3f4f6; }
+        .sticky-header { position: sticky; top: 0; z-index: 10; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b sticky-header">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">
+                        <i class="fas fa-car text-blue-600 mr-2"></i>
+                        Araç Fiyat Analizi
+                    </h1>
+                    <p class="text-sm text-gray-600">Hasar durumu ve detaylı karşılaştırma</p>
+                </div>
+                <div class="flex gap-6">
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">Toplam İlan</div>
+                        <div class="text-2xl font-bold text-blue-600" id="totalCount">0</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">Hasarsız</div>
+                        <div class="text-2xl font-bold text-green-600" id="cleanCount">0</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">Ortalama Fiyat</div>
+                        <div class="text-2xl font-bold text-orange-600" id="avgPrice">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex max-w-full mx-auto px-4 py-6 gap-6">
+        <!-- Sol Menü -->
+        <div class="w-80 flex-shrink-0">
+            <div class="bg-white rounded-lg shadow-sm border sticky top-24">
+                <div class="p-4 border-b">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <i class="fas fa-filter mr-2"></i>Filtreler
+                    </h3>
+                </div>
+                
+                <div class="p-4 space-y-4">
+                    <!-- Marka -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Marka</label>
+                        <select id="brandFilterSide" onchange="handleBrandChange()" 
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">Marka Seç</option>
+                        </select>
+                    </div>
+
+                    <!-- Seri -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Seri</label>
+                        <select id="seriesFilterSide" onchange="handleSeriesChange()" 
+                                class="w-full px-3 py-2 border rounded-lg" disabled>
+                            <option value="">Önce Marka Seç</option>
+                        </select>
+                    </div>
+
+                    <!-- Alt Model (Body Type) -->
+                    <div id="subModelContainer" style="display: none;">
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Alt Model</label>
+                        <select id="subModelFilterSide" onchange="handleSubModelChange()" 
+                                class="w-full px-3 py-2 border rounded-lg" disabled>
+                            <option value="">Alt Model Seç</option>
+                        </select>
+                    </div>
+
+                    <!-- Model -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Model</label>
+                        <select id="modelFilterSide" onchange="applyFilters(true)" 
+                                class="w-full px-3 py-2 border rounded-lg" disabled>
+                            <option value="">Önce Seri Seç</option>
+                        </select>
+                    </div>
+
+                    <!-- Yıl Aralığı -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Yıl Aralığı</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="yearMinFilter" onchange="applyFilters(true)" 
+                                   placeholder="min" min="1990" max="2025"
+                                   class="px-3 py-2 border rounded-lg text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                            <input type="number" id="yearMaxFilter" onchange="applyFilters(true)" 
+                                   placeholder="max" min="1990" max="2025"
+                                   class="px-3 py-2 border rounded-lg text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <!-- KM Aralığı -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">KM Aralığı</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="kmMinFilter" onchange="applyFilters(true)" 
+                                   placeholder="min" min="0" step="1000"
+                                   class="px-3 py-2 border rounded-lg text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                            <input type="number" id="kmMaxFilter" onchange="applyFilters(true)" 
+                                   placeholder="max" min="0" step="1000"
+                                   class="px-3 py-2 border rounded-lg text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Fiyat Aralığı -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Fiyat Aralığı</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="priceMin" placeholder="Min" onchange="applyFilters(true)"
+                                   class="px-3 py-2 border rounded-lg text-sm">
+                            <input type="number" id="priceMax" placeholder="Max" onchange="applyFilters(true)"
+                                   class="px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Yakıt -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Yakıt Tipi</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" value="Benzinli" onchange="applyFilters(true)" class="fuel-checkbox mr-2">
+                                <span class="text-sm">Benzinli</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="Dizel" onchange="applyFilters(true)" class="fuel-checkbox mr-2">
+                                <span class="text-sm">Dizel</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="Hybrid" onchange="applyFilters(true)" class="fuel-checkbox mr-2">
+                                <span class="text-sm">Hybrid</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="Elektrikli" onchange="applyFilters(true)" class="fuel-checkbox mr-2">
+                                <span class="text-sm">Elektrikli</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Vites -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Vites</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" value="Otomatik" onchange="applyFilters(true)" class="gear-checkbox mr-2">
+                                <span class="text-sm">Otomatik</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="Manuel" onchange="applyFilters(true)" class="gear-checkbox mr-2">
+                                <span class="text-sm">Manuel</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="Yarı Otomatik" onchange="applyFilters(true)" class="gear-checkbox mr-2">
+                                <span class="text-sm">Yarı Otomatik</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Şehir -->
+                    <div>
+                        <label class="text-sm font-medium text-gray-700 mb-2 block">Şehir</label>
+                        <div class="max-h-32 overflow-y-auto border border-gray-200 rounded text-sm space-y-1 p-2" id="cityFilterList">
+                            <div class="text-center text-gray-500 py-2">
+                                <i class="fas fa-spinner fa-spin"></i> Yükleniyor...
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Temizle Butonu -->
+                    <button onclick="clearAllFilters()" 
+                            class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">
+                        <i class="fas fa-times mr-2"></i>Filtreleri Temizle
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ana İçerik -->
+        <div class="flex-1">
+        <!-- Quick Search and Stats -->
+        <div class="bg-white rounded-lg shadow-sm border p-4 mb-4">
+            <div class="flex gap-4 items-center mb-4">
+                <div class="flex-1">
+                    <input type="text" id="searchInput" placeholder="Marka, model, seri ara..." 
+                           onkeyup="applyFilters(true)"
+                           class="w-full px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="sortTable('price')" class="px-3 py-2 bg-gray-100 rounded hover:bg-gray-200">
+                        <i class="fas fa-sort-amount-down"></i> Fiyat
+                    </button>
+                    <button onclick="sortTable('year')" class="px-3 py-2 bg-gray-100 rounded hover:bg-gray-200">
+                        <i class="fas fa-sort-amount-down"></i> Yıl
+                    </button>
+                    <button onclick="sortTable('km')" class="px-3 py-2 bg-gray-100 rounded hover:bg-gray-200">
+                        <i class="fas fa-sort-amount-down"></i> KM
+                    </button>
+                </div>
+            </div>
+
+            <!-- İstatistikler -->
+            <div class="grid grid-cols-3 gap-4 pt-4 border-t">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-blue-600" id="minPrice">0 ₺</div>
+                    <div class="text-xs text-gray-600">En Düşük</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-red-600" id="maxPrice">0 ₺</div>
+                    <div class="text-xs text-gray-600">En Yüksek</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-purple-600" id="filteredCount">0</div>
+                    <div class="text-xs text-gray-600">Gösterilen</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="text-center py-8">
+            <i class="fas fa-spinner fa-spin text-3xl text-gray-400"></i>
+            <div class="text-gray-600 mt-3">Veriler yükleniyor...</div>
+        </div>
+
+        <!-- Warning -->
+        <div id="selectBrand" class="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center" style="display: none;">
+            <i class="fas fa-exclamation-triangle text-4xl text-yellow-600 mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Marka Seçimi Yapın</h3>
+            <p class="text-gray-600">Araçları görüntülemek için lütfen yukarıdan Audi, BMW veya Mercedes-Benz seçin.</p>
+        </div>
+
+        <!-- Results Table -->
+        <div id="tableContainer" class="bg-white rounded-lg shadow-sm border overflow-hidden" style="display: none;">
+            <table class="w-full">
+                <thead class="bg-gray-50 border-b">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                            <button onclick="sortTable('title')" class="hover:text-blue-600">
+                                İlan <i class="fas fa-sort text-gray-400 ml-1"></i>
+                            </button>
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Model</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                            <button onclick="sortTable('year')" class="hover:text-blue-600">
+                                Yıl <i class="fas fa-sort text-gray-400 ml-1"></i>
+                            </button>
+                        </th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                            <button onclick="sortTable('km')" class="hover:text-blue-600">
+                                KM <i class="fas fa-sort text-gray-400 ml-1"></i>
+                            </button>
+                        </th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Yakıt</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Vites</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Hasar</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Özellikler</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
+                            <button onclick="sortTable('price')" class="hover:text-blue-600">
+                                Fiyat <i class="fas fa-sort text-gray-400 ml-1"></i>
+                            </button>
+                        </th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                    <!-- Rows will be inserted here -->
+                </tbody>
+            </table>
+            
+            <!-- Pagination -->
+            <div id="paginationContainer" class="bg-gray-50 px-4 py-3 border-t flex items-center justify-between">
+                <div class="text-sm text-gray-700">
+                    Toplam <span id="paginationTotal">0</span> sonuç içinde <span id="paginationRange">0-0</span> gösteriliyor
+                </div>
+                <div class="flex gap-2">
+                    <button id="prevPageBtn" onclick="changePage('prev')" disabled 
+                            class="px-3 py-1 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                        Önceki
+                    </button>
+                    <div id="pageNumbers" class="flex gap-1">
+                        <!-- Page numbers will be inserted here -->
+                    </div>
+                    <button id="nextPageBtn" onclick="changePage('next')" disabled
+                            class="px-3 py-1 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed">
+                        Sonraki
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results -->
+        <div id="noResults" class="bg-white rounded-lg shadow-sm border p-12 text-center" style="display: none;">
+            <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+            <div class="text-gray-600">Arama kriterlerinize uygun araç bulunamadı.</div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="sticky top-0 bg-white border-b p-6 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold" id="modalTitle">Araç Detayları</h2>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div id="modalContent" class="p-6">
+                    <!-- Modal content will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://ozsahibinden-backend.onrender.com/api';
+        let allCars = [];
+        let filteredCars = [];
+        let currentSort = { field: 'price', order: 'asc' };
+        let filtersData = {};
+        let currentPage = 1;
+        let totalPages = 1;
+        let totalResults = 0;
+
+        // Read filters from URL
+        async function readUrlFilters() {
+            const path = window.location.pathname;
+            const parts = path.split('/').filter(p => p);
+            
+            if (parts.length === 0) return;
+            
+            let brand = null;
+            let series = null;
+            let subModel = null;
+            
+            // Parse URL parts
+            if (parts.length >= 1) {
+                brand = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+            }
+            
+            if (parts.length >= 2) {
+                series = parts[1].toUpperCase();
+            }
+            
+            if (parts.length >= 3) {
+                // Convert URL format to proper format: 1-4-tfsi → 1.4 TFSI
+                subModel = parts[2]
+                    .replace(/-/g, ' ')
+                    .replace(/(\d) (\d)/g, '$1.$2')
+                    .replace(/tfsi/gi, 'TFSI')
+                    .replace(/tdi/gi, 'TDI')
+                    .replace(/fsi/gi, 'FSI');
+            }
+            
+            // Set brand and load its data
+            if (brand) {
+                document.getElementById('brandFilterSide').value = brand;
+                await handleBrandChange();
+                
+                // Wait a bit for series dropdown to populate
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Set series if exists
+                if (series) {
+                    document.getElementById('seriesFilterSide').value = series;
+                    await handleSeriesChange(subModel); // subModel'i gönder ki body type olup olmadığını anlasın
+                    
+                    // Wait for submodel dropdown to populate
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
+                    // Set submodel if exists
+                    if (subModel) {
+                        const subModelSelect = document.getElementById('subModelFilterSide');
+                        const bodyTypes = ['cabrio', 'sedan', 'hatchback', 'sportback', 'coupe'];
+                        const isBodyType = bodyTypes.includes(subModel.toLowerCase());
+                        
+                        if (isBodyType) {
+                            console.log('🟡 URL LOADING - Body type detected, temizleniyor dropdown');
+                            console.log('🟡 URL LOADING - Dropdown öncesi option sayısı:', subModelSelect.options.length);
+                            
+                            // For body types, clear dropdown and add only body type options
+                            subModelSelect.innerHTML = '<option value="">Alt Model Seç</option>';
+                            
+                            // Add only available body types from dropdown (bu kısım artık gerekmiyor çünkü handleSeriesChange doğru çalışıyor)
+                            // Dropdown zaten doğru doldurulmuş olacak
+                            
+                            console.log('🟡 URL LOADING - Dropdown sonrası option sayısı:', subModelSelect.options.length);
+                            
+                            // Select the current body type
+                            const capitalizedSubModel = subModel.charAt(0).toUpperCase() + subModel.slice(1);
+                            subModelSelect.value = capitalizedSubModel;
+                            console.log('🟡 URL LOADING - Seçilen body type:', capitalizedSubModel);
+                        } else {
+                            // For non-body types, check if it's a model variant
+                            console.log('🟠 URL LOADING - Not a body type, checking for model variant');
+                            let foundMatch = false;
+                            
+                            // Try exact match first
+                            for (let option of subModelSelect.options) {
+                                if (option.value === subModel) {
+                                    subModelSelect.value = option.value;
+                                    foundMatch = true;
+                                    console.log('🟠 URL LOADING - Exact match found:', subModel);
+                                    break;
+                                }
+                            }
+                            
+                            // If no exact match, try partial match (for variants like "Quattro Advanced")
+                            if (!foundMatch && subModel) {
+                                const searchTerms = subModel.toLowerCase().split(' ');
+                                for (let option of subModelSelect.options) {
+                                    const optionLower = option.value.toLowerCase();
+                                    const matchCount = searchTerms.filter(term => optionLower.includes(term)).length;
+                                    
+                                    // If most words match, consider it a match
+                                    if (matchCount >= Math.ceil(searchTerms.length * 0.6)) {
+                                        subModelSelect.value = option.value;
+                                        foundMatch = true;
+                                        console.log('🟠 URL LOADING - Partial match found:', option.value, 'for search:', subModel);
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            // If still no match found, maybe it's a model variant for the Model dropdown
+                            if (!foundMatch) {
+                                console.log('🟠 URL LOADING - No subModel match, might be a model variant');
+                                // We'll handle this in Model dropdown later
+                            }
+                        }
+                    }
+                }
+                
+                // Apply all filters at once
+                console.log('🐛 DEBUG - About to call applyFilters after URL loading');
+                console.log('🐛 DEBUG - Final filter states:', {
+                    brand: document.getElementById('brandFilterSide').value,
+                    series: document.getElementById('seriesFilterSide').value,
+                    subModel: document.getElementById('subModelFilterSide').value,
+                    model: document.getElementById('modelFilterSide').value
+                });
+                applyFilters(true);
+            }
+        }
+        
+        // Update URL from current filter values
+        window.updateUrlFromFilters = function(brand, series, subModel, model) {
+            console.log('🔗 updateUrlFromFilters called with:', {brand: brand, series: series, subModel: subModel, model: model});
+            if (!brand) {
+                console.log('🔗 No brand, returning');
+                return;
+            }
+            
+            var url = '/';
+            url += brand.toLowerCase();
+            console.log('🔗 URL after brand:', url);
+            
+            if (series) {
+                url += '/' + series.toLowerCase().replace(/\s+/g, '-');
+            }
+            
+            if (subModel) {
+                var bodyType = subModel.split(' ')[0].toLowerCase();
+                url += '/' + bodyType;
+            }
+            
+            if (model && model !== subModel) {
+                // Extract engine part from model (everything after body type)
+                var bodyType = subModel;
+                var modelWithoutBodyType = model.replace(series + ' ' + bodyType + ' ', '');
+                console.log('🔗 Model:', model, 'BodyType:', bodyType, 'Engine:', modelWithoutBodyType);
+                
+                if (modelWithoutBodyType) {
+                    var enginePart = modelWithoutBodyType.toLowerCase();
+                    url += '/' + enginePart.replace(/\s+/g, '-').replace(/\./g, '-');
+                }
+            }
+            
+            // Add fuel types to URL path (after model)
+            var fuelCheckboxes = document.querySelectorAll('.fuel-checkbox:checked');
+            if (fuelCheckboxes.length > 0) {
+                var selectedFuels = Array.from(fuelCheckboxes).map(function(cb) {
+                    return cb.value.toLowerCase().replace(/\s+/g, '');
+                });
+                url += '/' + selectedFuels.join(',');
+            }
+            
+            // Add transmission to URL path
+            var gearCheckboxes = document.querySelectorAll('.gear-checkbox:checked');
+            if (gearCheckboxes.length === 1) {
+                var selectedGear = gearCheckboxes[0].value.toLowerCase().replace(/\s+/g, '');
+                url += '/' + selectedGear;
+            }
+            
+            // Add damage filter to URL path
+            var damageRadio = document.querySelector('input[name="damage"]:checked');
+            if (damageRadio && damageRadio.value !== '') {
+                var damageValue = damageRadio.value.toLowerCase().replace(/\s+/g, '');
+                url += '/' + damageValue;
+            }
+            
+            // Add query parameters for ranges
+            var queryParams = [];
+            
+            var yearMin = document.getElementById('yearMinFilter').value;
+            var yearMax = document.getElementById('yearMaxFilter').value;
+            if (yearMin) queryParams.push('year_min=' + yearMin);
+            if (yearMax) queryParams.push('year_max=' + yearMax);
+            
+            var kmMin = document.getElementById('kmMinFilter').value;
+            var kmMax = document.getElementById('kmMaxFilter').value;
+            if (kmMin) queryParams.push('km_min=' + kmMin);
+            if (kmMax) queryParams.push('km_max=' + kmMax);
+            
+            var priceMin = document.getElementById('priceMin').value;
+            var priceMax = document.getElementById('priceMax').value;
+            if (priceMin) queryParams.push('price_min=' + priceMin);
+            if (priceMax) queryParams.push('price_max=' + priceMax);
+            
+            // Add city parameters
+            var cityCheckboxes = document.querySelectorAll('.city-checkbox:checked');
+            if (cityCheckboxes.length > 0) {
+                var selectedCities = Array.from(cityCheckboxes).map(cb => encodeURIComponent(cb.value));
+                queryParams.push('city=' + selectedCities.join(','));
+            }
+            
+            if (queryParams.length > 0) {
+                url += '?' + queryParams.join('&');
+            }
+            
+            console.log('🔗 Updating URL to:', url);
+            window.history.replaceState(null, '', url);
+        };
+        
+        // Load data directly from URL (no dropdown dance)
+        async function loadDataFromUrl() {
+            window.loadingFromUrl = true; // Flag to prevent URL update loop
+            try {
+                // First load filters data for dropdowns
+                const filtersResponse = await fetch(`${API_BASE}/cars/filters`);
+                const apiData = await filtersResponse.json();
+                
+                // Extract filters from API response - check both possible structures
+                filtersData = apiData.filters || apiData;
+                
+                console.log('🔧 filtersData structure:', filtersData);
+                console.log('🔧 filtersData.brands:', filtersData.brands);
+                console.log('🔧 API success status:', apiData.success);
+                
+                // Populate basic dropdowns only if data exists
+                if (filtersData.brands) {
+                    console.log('🔧 Calling populateBrandFilter...');
+                    populateBrandFilter();
+                    console.log('🔧 populateBrandFilter completed');
+                }
+                if (filtersData.years) {
+                    console.log('🔧 Calling populateYearFilter...');
+                    populateYearFilter();
+                    console.log('🔧 populateYearFilter completed');
+                }
+                if (filtersData.cities) {
+                    console.log('🔧 Calling populateCityFilter...');
+                    populateCityFilter();
+                    console.log('🔧 populateCityFilter completed');
+                }
+                
+                // Parse URL
+                const path = window.location.pathname;
+                const parts = path.split('/').filter(p => p);
+                
+                let brand = null;
+                let series = null;
+                let subModel = null;
+                
+                if (parts.length >= 1) {
+                    const urlBrand = parts[0];
+                    // Find matching brand from dropdown options (case insensitive)
+                    const brandOptions = Array.from(document.getElementById('brandFilterSide').options);
+                    const matchedBrand = brandOptions.find(opt => 
+                        opt.value.toLowerCase() === urlBrand.toLowerCase() ||
+                        opt.value.toLowerCase() === urlBrand.replace('-', ' ').toLowerCase()
+                    );
+                    brand = matchedBrand ? matchedBrand.value : null;
+                    console.log('🔧 URL brand:', urlBrand, '→ Matched brand:', brand);
+                }
+                
+                if (parts.length >= 2) {
+                    series = parts[1].toUpperCase();
+                }
+                
+                // Check for fuel types - prioritize checking from the end (fuel is usually last)
+                const fuelTypes = ['benzinli', 'dizel', 'hybrid', 'elektrikli'];
+                let fuelTypeIndex = -1;
+                
+                // Check from end to beginning for fuel types
+                for (let i = parts.length - 1; i >= 2; i--) {
+                    if (fuelTypes.includes(parts[i].toLowerCase())) {
+                        console.log('🔥 Fuel type detected in URL position', i, ':', parts[i]);
+                        fuelTypeIndex = i;
+                        // Yakıt tipini işaretle
+                        const fuelCheckboxes = document.querySelectorAll('.fuel-checkbox');
+                        fuelCheckboxes.forEach(checkbox => {
+                            if (checkbox.value.toLowerCase() === parts[i].toLowerCase()) {
+                                checkbox.checked = true;
+                                console.log('🔥 Fuel checkbox checked:', checkbox.value);
+                            }
+                        });
+                        break;
+                    }
+                }
+                
+                // Check for transmission types
+                const transmissionTypes = ['manuel', 'otomatik'];
+                let transmissionTypeIndex = -1;
+                
+                // Check from end to beginning for transmission types
+                for (let i = parts.length - 1; i >= 2; i--) {
+                    if (transmissionTypes.includes(parts[i].toLowerCase())) {
+                        console.log('⚙️ Transmission type detected in URL position', i, ':', parts[i]);
+                        transmissionTypeIndex = i;
+                        // Vites tipini işaretle
+                        const gearCheckboxes = document.querySelectorAll('.gear-checkbox');
+                        gearCheckboxes.forEach(checkbox => {
+                            if (checkbox.value.toLowerCase() === parts[i].toLowerCase()) {
+                                checkbox.checked = true;
+                                console.log('⚙️ Transmission checkbox checked:', checkbox.value);
+                            }
+                        });
+                        break;
+                    }
+                }
+                
+                
+                if (parts.length >= 3 && fuelTypeIndex !== 2 && transmissionTypeIndex !== 2) {
+                    // Only parse as subModel if it's not a fuel type or transmission type
+                    // Convert URL format: 1-4-tfsi → 1.4 TFSI
+                    subModel = parts[2]
+                        .replace(/-/g, ' ')
+                        .replace(/(\d) (\d)/g, '$1.$2')
+                        .replace(/tfsi/gi, 'TFSI')
+                        .replace(/tdi/gi, 'TDI')
+                        .replace(/fsi/gi, 'FSI');
+                    console.log('🔧 Parsed subModel from URL:', parts[2], '→', subModel);
+                }
+
+                let model = null;
+                // Find model - it should be the part before fuel/transmission type (if they exist) or the last part
+                let modelIndex = -1;
+                
+                // Find the earliest special type index (fuel or transmission)
+                let specialTypeIndex = -1;
+                if (fuelTypeIndex > 0 && transmissionTypeIndex > 0) {
+                    specialTypeIndex = Math.min(fuelTypeIndex, transmissionTypeIndex);
+                } else if (fuelTypeIndex > 0) {
+                    specialTypeIndex = fuelTypeIndex;
+                } else if (transmissionTypeIndex > 0) {
+                    specialTypeIndex = transmissionTypeIndex;
+                }
+                
+                if (specialTypeIndex > 0) {
+                    // If special type exists, model is the part before it
+                    modelIndex = specialTypeIndex - 1;
+                } else if (parts.length >= 4) {
+                    // If no special type, model is at position 3
+                    modelIndex = 3;
+                }
+                
+                if (modelIndex >= 3 && modelIndex < parts.length) {
+                    // Convert URL format: 1-8-tfsi → 1.8 TFSI
+                    model = parts[modelIndex]
+                        .replace(/-/g, ' ')
+                        .replace(/(\d) (\d)/g, '$1.$2')  // 1 8 → 1.8
+                        .replace(/tfsi/gi, 'TFSI')
+                        .replace(/tdi/gi, 'TDI')
+                        .replace(/fsi/gi, 'FSI')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                        .join(' ');
+                    console.log('🔧 Parsed model from URL position', modelIndex, ':', parts[modelIndex], '→', model);
+                }
+                
+                // Set dropdowns directly (no events)
+                if (brand) {
+                    console.log('🔧 Available brands in dropdown:', Array.from(document.getElementById('brandFilterSide').options).map(opt => opt.value));
+                    console.log('🔧 Trying to set brand:', brand);
+                    document.getElementById('brandFilterSide').value = brand;
+                    console.log('🔧 Brand dropdown value after set:', document.getElementById('brandFilterSide').value);
+                    await populateSeriesDropdown(brand);
+                }
+                
+                if (series && brand) {
+                    document.getElementById('seriesFilterSide').value = series;
+                    await populateSubModelDropdown(brand, series, subModel);
+                }
+                
+                if (subModel && series && brand) {
+                    // Find matching submodel option with smart matching
+                    const subModelSelect = document.getElementById('subModelFilterSide');
+                    const availableOptions = Array.from(subModelSelect.options).map(opt => opt.value).filter(val => val);
+                    console.log('🔧 Available subModel options:', availableOptions);
+                    console.log('🔧 Looking for subModel:', subModel);
+                    
+                    let matchedOption = null;
+                    
+                    // For body types like "Cabrio", "Sedan", "Hatchback", "Sportback"
+                    // Don't auto-select a specific variant, just filter by body type
+                    const bodyTypes = ['cabrio', 'sedan', 'hatchback', 'sportback', 'coupe'];
+                    const isBodyType = bodyTypes.includes(subModel.toLowerCase());
+                    
+                    if (isBodyType) {
+                        console.log('🔧 Body type detected:', subModel);
+                        const capitalizedSubModel = subModel.charAt(0).toUpperCase() + subModel.slice(1);
+                        
+                        // Just find and select the body type if it exists in dropdown
+                        // DON'T change dropdown contents!
+                        let found = false;
+                        for (let i = 0; i < subModelSelect.options.length; i++) {
+                            const option = subModelSelect.options[i];
+                            // Check if option starts with the body type (e.g., "Cabrio", "Coupe", "Sedan")
+                            if (option.value === capitalizedSubModel || 
+                                option.value.startsWith(capitalizedSubModel + ' ')) {
+                                // If exact match exists, use it
+                                if (option.value === capitalizedSubModel) {
+                                    subModelSelect.value = capitalizedSubModel;
+                                    matchedOption = capitalizedSubModel;
+                                    found = true;
+                                    console.log('🔧 Found exact body type:', capitalizedSubModel);
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        // If exact body type not found, add it as temporary option
+                        if (!found) {
+                            const tempOption = document.createElement('option');
+                            tempOption.value = capitalizedSubModel;
+                            tempOption.textContent = capitalizedSubModel;
+                            subModelSelect.add(tempOption, 1); // Add after first option
+                            subModelSelect.value = capitalizedSubModel;
+                            matchedOption = capitalizedSubModel;
+                            console.log('🔧 Added temp body type option:', capitalizedSubModel);
+                        }
+                    } else {
+                        // Try exact match first
+                        matchedOption = availableOptions.find(opt => opt.toLowerCase() === subModel.toLowerCase());
+                        
+                        // Try partial match (option contains subModel)
+                        if (!matchedOption) {
+                            matchedOption = availableOptions.find(opt => 
+                                opt.toLowerCase().includes(subModel.toLowerCase())
+                            );
+                        }
+                        
+                        // Try reverse partial match (subModel contains option)
+                        if (!matchedOption) {
+                            matchedOption = availableOptions.find(opt => 
+                                subModel.toLowerCase().includes(opt.toLowerCase())
+                            );
+                        }
+                    }
+                    
+                    if (matchedOption) {
+                        console.log('🔧 SubModel matched:', subModel, '→', matchedOption);
+                        // For body types, the value is already set via the temporary option
+                        if (!isBodyType) {
+                            subModelSelect.value = matchedOption;
+                        }
+                        
+                        // Trigger submodel change to populate model dropdown (but don't apply filters yet)
+                        console.log('🐛 DEBUG - About to trigger handleSubModelChange for body type');
+                        handleSubModelChange(false); // false = don't apply filters yet
+                    } else {
+                        console.log('🔧 No subModel match found for:', subModel);
+                        console.log('🟠 Trying advanced matching for model variant');
+                        
+                        // Try advanced matching for model variants
+                        if (!isBodyType) {
+                            const searchTerms = subModel.toLowerCase().split(' ');
+                            let bestMatch = null;
+                            let bestScore = 0;
+                            
+                            for (let i = 0; i < subModelSelect.options.length; i++) {
+                                const option = subModelSelect.options[i];
+                                if (!option.value) continue;
+                                
+                                const optionLower = option.value.toLowerCase();
+                                const score = searchTerms.filter(term => optionLower.includes(term)).length;
+                                
+                                if (score > bestScore && score > 0) {
+                                    bestMatch = option.value;
+                                    bestScore = score;
+                                }
+                            }
+                            
+                            if (bestMatch) {
+                                console.log('🟠 Advanced match found:', bestMatch, 'for search:', subModel);
+                                subModelSelect.value = bestMatch;
+                                handleSubModelChange();
+                            } else {
+                                console.log('🟠 No advanced match found either');
+                            }
+                        }
+                    }
+                }
+                
+                if (model && subModel && series && brand) {
+                    // Find matching model option
+                    const modelSelect = document.getElementById('modelFilterSide');
+                    const availableModelOptions = Array.from(modelSelect.options).map(opt => opt.value).filter(val => val);
+                    console.log('🔧 Available model options:', availableModelOptions);
+                    console.log('🔧 Looking for model:', model);
+                    
+                    let matchedModelOption = null;
+                    
+                    // Try to find matching model (contains both subModel and model parts)
+                    matchedModelOption = availableModelOptions.find(opt => 
+                        opt.toLowerCase().includes(model.toLowerCase())
+                    );
+                    
+                    if (matchedModelOption) {
+                        console.log('🔧 Model matched:', model, '→', matchedModelOption);
+                        modelSelect.value = matchedModelOption;
+                    } else {
+                        console.log('🔧 No model match found for:', model);
+                    }
+                }
+                
+                // Show the interface
+                document.getElementById('selectBrand').style.display = 'none';
+                document.getElementById('tableContainer').style.display = 'block';
+                
+                // Parse query parameters for year and price ranges
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('year_min')) {
+                    document.getElementById('yearMinFilter').value = urlParams.get('year_min');
+                    console.log('🔧 Set yearMin from URL:', urlParams.get('year_min'));
+                }
+                if (urlParams.get('year_max')) {
+                    document.getElementById('yearMaxFilter').value = urlParams.get('year_max');
+                    console.log('🔧 Set yearMax from URL:', urlParams.get('year_max'));
+                }
+                if (urlParams.get('km_min')) {
+                    document.getElementById('kmMinFilter').value = urlParams.get('km_min');
+                    console.log('🔧 Set kmMin from URL:', urlParams.get('km_min'));
+                }
+                if (urlParams.get('km_max')) {
+                    document.getElementById('kmMaxFilter').value = urlParams.get('km_max');
+                    console.log('🔧 Set kmMax from URL:', urlParams.get('km_max'));
+                }
+                if (urlParams.get('price_min')) {
+                    document.getElementById('priceMin').value = urlParams.get('price_min');
+                    console.log('🔧 Set priceMin from URL:', urlParams.get('price_min'));
+                }
+                if (urlParams.get('price_max')) {
+                    document.getElementById('priceMax').value = urlParams.get('price_max');
+                    console.log('🔧 Set priceMax from URL:', urlParams.get('price_max'));
+                }
+                
+                // Parse city parameters
+                if (urlParams.get('city')) {
+                    const cities = urlParams.get('city').split(',').map(city => decodeURIComponent(city));
+                    console.log('🏙️ Setting cities from URL:', cities);
+                    
+                    // Wait for city filter to be populated
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    
+                    cities.forEach(city => {
+                        const cityCheckbox = document.querySelector(`.city-checkbox[value="${city}"]`);
+                        if (cityCheckbox) {
+                            cityCheckbox.checked = true;
+                            console.log('🏙️ City checkbox checked:', city);
+                        } else {
+                            console.log('🏙️ City checkbox not found for:', city);
+                        }
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error loading data from URL:', error);
+                // Fallback to normal loading
+                await loadData();
+            } finally {
+                window.loadingFromUrl = false; // Reset flag
+                
+                // Now that URL loading is complete, apply filters
+                console.log('🐛 DEBUG - URL loading complete, now calling applyFilters');
+                applyFilters(true);
+            }
+        }
+        
+        // Populate series dropdown for specific brand
+        async function populateSeriesDropdown(brand) {
+            const seriesFilter = document.getElementById('seriesFilterSide');
+            seriesFilter.disabled = false;
+            seriesFilter.innerHTML = '<option value="">Tüm Seriler</option>';
+            
+            const brandSeries = filtersData.series.filter(s => s.brand === brand);
+            brandSeries.forEach(seriesData => {
+                const option = document.createElement('option');
+                option.value = seriesData.series;
+                option.textContent = `${seriesData.series} (${seriesData.count})`;
+                seriesFilter.appendChild(option);
+            });
+        }
+        
+        // Get A1 categories from models
+        function getA1Categories(brandModels) {
+            const a1Models = brandModels.filter(modelData => {
+                const model = modelData.model;
+                return (model.includes('1.4 TFSI') || model.includes('1.6 TDI')) && 
+                       !model.match(/^A[0-9]/);
+            });
+            
+            const categories = new Set();
+            a1Models.forEach(modelData => {
+                if (modelData.model.includes('1.4 TFSI')) {
+                    categories.add('1.4 TFSI');
+                }
+                if (modelData.model.includes('1.6 TDI')) {
+                    categories.add('1.6 TDI');
+                }
+            });
+            
+            return Array.from(categories);
+        }
+        
+        // Get series categories from models
+        function getSeriesCategories(brandModels, series) {
+            const seriesModels = brandModels.filter(modelData => {
+                return modelData.model && modelData.model.startsWith(series + ' ');
+            });
+            
+            const categories = new Set();
+            seriesModels.forEach(modelData => {
+                const model = modelData.model;
+                const parts = model.split(' ');
+                if (parts.length > 1) {
+                    const category = parts.slice(1).join(' ');
+                    categories.add(category);
+                }
+            });
+            
+            return Array.from(categories);
+        }
+
+        // Populate submodel dropdown for specific brand+series
+        async function populateSubModelDropdown(brand, series, urlSubModel = null) {
+            const subModelContainer = document.getElementById('subModelContainer');
+            const subModelFilter = document.getElementById('subModelFilterSide');
+            
+            const brandModels = filtersData.models.filter(m => m.brand === brand);
+            let categories = [];
+            
+            if (series === 'A1') {
+                // A1 special handling
+                categories = getA1Categories(brandModels);
+            } else {
+                // Standard categories
+                categories = getSeriesCategories(brandModels, series);
+            }
+            
+            if (categories.length > 0) {
+                console.log('🔴 handleSeriesChange - categories bulundu:', categories);
+                console.log('🔴 TÜM A1 kategorileri detay:', JSON.stringify(categories));
+                subModelContainer.style.display = 'block';
+                subModelFilter.disabled = false;
+                subModelFilter.innerHTML = '<option value="">Alt Model Seç</option>';
+                
+                // URL'den body type geliyorsa, sadece body type'ları göster
+                console.log('🟨 STEP 1: Starting branching logic');
+                const bodyTypes = ['cabrio', 'sedan', 'hatchback', 'sportback', 'coupe', 'allroad', 'avant'];
+                const currentSubModel = urlSubModel; // URL'den gelen subModel
+                console.log('🟨 STEP 2: currentSubModel =', currentSubModel);
+                const isUrlBodyType = currentSubModel && bodyTypes.includes(currentSubModel.toLowerCase());
+                console.log('🟨 STEP 3: isUrlBodyType =', isUrlBodyType);
+                
+                // subModel (body type) kısmının variant içerip içermediğini kontrol et
+                // Word boundary kullan, sadece substring değil
+                const hasQuattro = currentSubModel && /\bquattro\b/i.test(currentSubModel);
+                const hasAdvanced = currentSubModel && /\badvanced\b/i.test(currentSubModel);
+                const hasDesign = currentSubModel && /\bdesign\b/i.test(currentSubModel);
+                const hasSport = currentSubModel && /\bsport\b/i.test(currentSubModel); // "sportback"da "sport" ayrı kelime değil!
+                const hasLine = currentSubModel && /\bline\b/i.test(currentSubModel);
+                
+                const isModelVariant = hasQuattro || hasAdvanced || hasDesign || hasSport || hasLine;
+                
+                console.log('🔍 VARIANT CHECKS:');
+                console.log('🔍 hasQuattro:', hasQuattro);
+                console.log('🔍 hasAdvanced:', hasAdvanced);
+                console.log('🔍 hasDesign:', hasDesign);
+                console.log('🔍 hasSport:', hasSport);
+                console.log('🔍 hasLine:', hasLine);
+                
+                console.log('🔍 DEBUG BRANCHING:');
+                console.log('🔍 urlSubModel:', urlSubModel);
+                console.log('🔍 currentSubModel:', currentSubModel);
+                console.log('🔍 isUrlBodyType:', isUrlBodyType);
+                console.log('🔍 isModelVariant:', isModelVariant);
+                console.log('🔍 Final condition (isUrlBodyType && !isModelVariant):', isUrlBodyType && !isModelVariant);
+                
+                if (isUrlBodyType && !isModelVariant) {
+                    console.log('🟢 URL body type detected, showing only body types');
+                    // Sadece database'de bulunan body type'ları göster
+                    const availableBodyTypes = new Set();
+                    categories.forEach(cat => {
+                        const firstWord = cat.split(' ')[0];
+                        if (['Cabrio', 'Coupe', 'Sportback', 'Hatchback', 'Sedan', 'Allroad', 'Avant'].includes(firstWord)) {
+                            availableBodyTypes.add(firstWord);
+                        }
+                    });
+                    
+                    Array.from(availableBodyTypes).forEach(bodyType => {
+                        console.log('🟢 Adding available body type:', bodyType);
+                        const option = document.createElement('option');
+                        option.value = bodyType;
+                        option.textContent = bodyType;
+                        subModelFilter.appendChild(option);
+                    });
+                } else if (isModelVariant) {
+                    console.log('🔵 Model variant detected, showing motor types');
+                    // Model variant gelince ana modeli göster, alt modelde motorları
+                    const mainModel = categories[0]?.split(' ')[0] || 'Sedan'; // İlk kelimeleri al (Sedan)
+                    
+                    // Ana modeli dropdown'a ekle  
+                    const mainOption = document.createElement('option');
+                    mainOption.value = `${series} ${mainModel}`; // "A6 Sedan"
+                    mainOption.textContent = `${series} ${mainModel}`;
+                    subModelFilter.appendChild(mainOption);
+                    
+                    console.log('🔵 Added main model:', `${series} ${mainModel}`);
+                    
+                    // Ana modeli seç
+                    subModelFilter.value = `${series} ${mainModel}`;
+                    
+                    // Alt Model dropdown'ını hazırla (motor tipleri için)
+                    // Bu handleSubModelChange tarafından yapılacak
+                } else {
+                    console.log('🔴 Normal mode, checking for A1 special case');
+                    
+                    // A1 özel durumu - motor kategorileri var, body type yok
+                    if (series === 'A1') {
+                        console.log('🟣 A1 detected, showing motor categories');
+                        categories.forEach(category => {
+                            console.log('🟣 Adding A1 motor category:', category);
+                            const option = document.createElement('option');
+                            option.value = category;
+                            option.textContent = category;
+                            subModelFilter.appendChild(option);
+                        });
+                    } else {
+                        // Diğer seriler için temiz body type'ları göster
+                        const availableBodyTypes = new Set();
+                        categories.forEach(cat => {
+                            const firstWord = cat.split(' ')[0];
+                            if (['Cabrio', 'Coupe', 'Sportback', 'Hatchback', 'Sedan', 'Allroad', 'Avant'].includes(firstWord)) {
+                                availableBodyTypes.add(firstWord);
+                            }
+                        });
+                        
+                        // İlk olarak body type'ları ekle
+                        Array.from(availableBodyTypes).sort().forEach(bodyType => {
+                            console.log('🔴 Adding clean body type in normal mode:', bodyType);
+                            const option = document.createElement('option');
+                            option.value = bodyType;
+                            option.textContent = bodyType;
+                            subModelFilter.appendChild(option);
+                        });
+                    }
+                }
+                console.log('🔴 handleSeriesChange - dropdown dolduruldu, toplam option:', subModelFilter.options.length);
+            }
+            
+            // Update city filter when series changes (after a short delay to ensure DOM is updated)
+            setTimeout(() => {
+                console.log('🔴 handleSeriesChange - calling updateCityFilter after timeout');
+                updateCityFilter();
+            }, 100);
+        }
+
+        // Update URL when filters change
+        function updateUrlFromFilters() {
+            const brand = document.getElementById('brandFilterSide').value;
+            const series = document.getElementById('seriesFilterSide').value;
+            const subModel = document.getElementById('subModelFilterSide').value;
+            
+            let url = '/';
+            if (brand) {
+                url += brand.toLowerCase();
+                if (series) {
+                    url += '/' + series.toLowerCase();
+                    if (subModel) {
+                        url += '/' + subModel.toLowerCase().replace(/\s+/g, '-');
+                    }
+                }
+            }
+            
+            // Update URL without page reload
+            if (window.location.pathname !== url) {
+                window.history.replaceState(null, '', url);
+            }
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                // Load both cars and filters data
+                const [carsResponse, filtersResponse] = await Promise.all([
+                    fetch(`${API_BASE}/cars?limit=10000`),
+                    fetch(`${API_BASE}/cars/filters`)
+                ]);
+                
+                if (!carsResponse.ok || !filtersResponse.ok) throw new Error('Veri yüklenemedi');
+                
+                const carsData = await carsResponse.json();
+                const filtersDataResponse = await filtersResponse.json();
+                
+                allCars = carsData.results;
+                filtersData = filtersDataResponse.filters;
+                
+                // Update counts
+                document.getElementById('totalCount').textContent = allCars.length;
+                const cleanCars = allCars.filter(car => 
+                    car.paintedPartsCount === 0 && car.changedPartsCount === 0
+                );
+                document.getElementById('cleanCount').textContent = cleanCars.length;
+                
+                // Populate filters with API data
+                populateBrandFilter();
+                populateYearFilter();
+                populateCityFilter();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('selectBrand').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = `
+                    <i class="fas fa-exclamation-triangle text-3xl text-red-400"></i>
+                    <div class="text-red-600 mt-3">Veriler yüklenemedi. Backend çalıştığından emin olun.</div>
+                `;
+            }
+        }
+
+        // Populate brand filter from API data
+        function populateBrandFilter() {
+            const brandFilter = document.getElementById('brandFilterSide');
+            brandFilter.innerHTML = '<option value="">Marka Seç</option>';
+            
+            // Get brands from API data, exclude empty brands
+            const brands = filtersData.brands.filter(b => b.brand && b.brand.trim());
+            brands.forEach(brandData => {
+                const option = document.createElement('option');
+                option.value = brandData.brand;
+                option.textContent = `${brandData.brand} (${brandData.count})`;
+                brandFilter.appendChild(option);
+            });
+        }
+
+        // Handle brand change
+        async function handleBrandChange() {
+            const brand = document.getElementById('brandFilterSide').value;
+            const seriesFilter = document.getElementById('seriesFilterSide');
+            const modelFilter = document.getElementById('modelFilterSide');
+            
+            if (!brand) {
+                seriesFilter.disabled = true;
+                seriesFilter.innerHTML = '<option value="">Önce Marka Seç</option>';
+                modelFilter.disabled = true;
+                modelFilter.innerHTML = '<option value="">Önce Seri Seç</option>';
+                
+                // Clear all filters when brand is cleared
+                document.querySelectorAll('.fuel-checkbox').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.gear-checkbox').forEach(cb => cb.checked = false);
+                
+                document.getElementById('selectBrand').style.display = 'block';
+                document.getElementById('tableContainer').style.display = 'none';
+                return;
+            }
+            
+            // Enable series filter and populate from API data
+            seriesFilter.disabled = false;
+            seriesFilter.innerHTML = '<option value="">Tüm Seriler</option>';
+            
+            // Get series for the selected brand from API data
+            const brandSeries = filtersData.series.filter(s => s.brand === brand);
+            brandSeries.forEach(seriesData => {
+                const option = document.createElement('option');
+                option.value = seriesData.series;
+                option.textContent = `${seriesData.series} (${seriesData.count})`;
+                seriesFilter.appendChild(option);
+            });
+            
+            // Reset model filter
+            modelFilter.disabled = true;
+            modelFilter.innerHTML = '<option value="">Önce Seri Seç</option>';
+            
+            // Update city filter when brand changes
+            updateCityFilter();
+            
+            applyFilters(true);
+        }
+        
+        async function handleSeriesChange(urlSubModel = null) {
+            console.log('🔴 handleSeriesChange BAŞLADI, urlSubModel:', urlSubModel);
+            const brand = document.getElementById('brandFilterSide').value;
+            const series = document.getElementById('seriesFilterSide').value;
+            console.log('🔴 handleSeriesChange - brand:', brand, 'series:', series);
+            
+            // Reset SubModel and Model dropdowns when series changes (unless loading from URL)
+            const subModelContainer = document.getElementById('subModelContainer');
+            const subModelFilter = document.getElementById('subModelFilterSide');
+            const modelFilter = document.getElementById('modelFilterSide');
+            
+            if (!urlSubModel) {
+                console.log('🔄 Resetting SubModel and Model dropdowns due to series change');
+                subModelFilter.value = '';
+                modelFilter.value = '';
+                
+                // Also clear fuel filters when series changes
+                console.log('🔄 Clearing fuel filters due to series change');
+                document.querySelectorAll('.fuel-checkbox').forEach(cb => cb.checked = false);
+                
+                // Also clear city filters when series changes
+                console.log('🔄 Clearing city filters due to series change');
+                document.querySelectorAll('.city-checkbox').forEach(cb => cb.checked = false);
+                
+                // Clear other filters too
+                document.querySelectorAll('.gear-checkbox').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.seller-checkbox').forEach(cb => cb.checked = false);
+                
+                // Clear year inputs
+                if (document.getElementById('yearMinFilter')) {
+                    document.getElementById('yearMinFilter').value = '';
+                }
+                if (document.getElementById('yearMaxFilter')) {
+                    document.getElementById('yearMaxFilter').value = '';
+                }
+                
+                // Clear KM inputs
+                if (document.getElementById('kmMinFilter')) {
+                    document.getElementById('kmMinFilter').value = '';
+                }
+                if (document.getElementById('kmMaxFilter')) {
+                    document.getElementById('kmMaxFilter').value = '';
+                }
+            }
+            
+            if (!series) {
+                subModelContainer.style.display = 'none';
+                subModelFilter.disabled = true;
+                modelFilter.disabled = true;
+                modelFilter.innerHTML = '<option value="">Önce Seri Seç</option>';
+                applyFilters(true);
+                return;
+            }
+            
+            // Get models for the selected brand from API data
+            const brandModels = filtersData.models.filter(m => m.brand === brand);
+            
+            // Filter models based on selected series
+            let seriesModels = brandModels.filter(modelData => {
+                if (!modelData.model) return false;
+                
+                // Check if model belongs to the selected series
+                if (series === 'A1') {
+                    const model = modelData.model;
+                    return (model.includes('1.4 TFSI') || model.includes('1.6 TDI')) && 
+                           !model.match(/^A[0-9]/);
+                }
+                return modelData.model.startsWith(series + ' ') || 
+                       modelData.model === series;
+            });
+            
+            // Check if series needs sub-model categorization
+            const subCategories = getSubCategories(series, seriesModels);
+            
+            if (subCategories.length > 1) {
+                // Show sub-model filter if there are multiple categories
+                subModelContainer.style.display = 'block';
+                subModelFilter.disabled = false;
+                subModelFilter.innerHTML = '<option value="">Alt Model Seç</option>';
+                
+                subCategories.sort().forEach(subCategory => {
+                    const option = document.createElement('option');
+                    option.value = subCategory;
+                    option.textContent = subCategory;
+                    subModelFilter.appendChild(option);
+                });
+                
+                // Reset model filter
+                modelFilter.disabled = true;
+                modelFilter.innerHTML = '<option value="">Önce Alt Model Seç</option>';
+            } else {
+                // Show models directly if no sub-categorization needed
+                subModelContainer.style.display = 'none';
+                populateModelFilter(series, seriesModels);
+            }
+            
+            document.getElementById('selectBrand').style.display = 'none';
+            applyFilters(true);
+        }
+        
+        // Dynamic sub-categorization function
+        function getSubCategories(series, seriesModels) {
+            const categories = new Set();
+            
+            seriesModels.forEach(modelData => {
+                const model = modelData.model;
+                let category = null;
+                
+                // Dynamic pattern matching for different series
+                if (series.match(/A[3-9]/)) {
+                    // For A3, A4, A5, A6, A7, A8 etc - look for body types
+                    const bodyTypeMatch = model.match(new RegExp(`${series}\\s+([^\\d]+?)(?:\\s+\\d|$)`, 'i'));
+                    if (bodyTypeMatch) {
+                        category = bodyTypeMatch[1].trim();
+                        
+                        // Special handling for common multi-word categories
+                        if (category.includes('Allroad')) {
+                            category = 'Allroad quattro';
+                        }
+                    }
+                } else if (series === 'A1') {
+                    // For A1, use engine types as sub-categories
+                    const engineMatch = model.match(/(\d+\.\d+\s+(TFSI|TDI|FSI))/i);
+                    if (engineMatch) {
+                        category = engineMatch[1].toUpperCase();
+                    }
+                } else {
+                    // For other series, try to extract first distinctive part
+                    const parts = model.split(' ');
+                    if (parts.length > 1) {
+                        category = parts[1];
+                    }
+                }
+                
+                if (category) {
+                    categories.add(category);
+                }
+            });
+            
+            return Array.from(categories);
+        }
+
+        function handleSubModelChange(shouldApplyFilters = true) {
+            const brand = document.getElementById('brandFilterSide').value;
+            const series = document.getElementById('seriesFilterSide').value;
+            const subModel = document.getElementById('subModelFilterSide').value;
+            const modelFilter = document.getElementById('modelFilterSide');
+            
+            if (!subModel) {
+                modelFilter.disabled = true;
+                modelFilter.innerHTML = '<option value="">Önce Model Seç</option>';
+                return;
+            }
+            
+            console.log('🟡 handleSubModelChange - subModel:', subModel);
+            
+            // Eğer subModel "A6 Sedan" gibi ana model ise, motorları göster
+            if (subModel.includes(series)) {
+                console.log('🟡 Main model selected, showing motor types');
+                modelFilter.disabled = false;
+                modelFilter.innerHTML = '<option value="">Motor Tipi Seç</option>';
+                
+                // O serinin tüm kategorilerini al
+                const brandModels = filtersData.models.filter(m => m.brand === brand);
+                const categories = getSeriesCategories(brandModels, series);
+                
+                // Motor tiplerini çıkar (Sedan'dan sonraki kısmı)
+                const motorTypes = new Set();
+                categories.forEach(category => {
+                    if (category.includes('Sedan')) {
+                        const parts = category.split(' ');
+                        if (parts.length > 1) {
+                            // "Sedan" kelimesinden sonraki kısmı al
+                            const motorPart = parts.slice(1).join(' ');
+                            if (motorPart.trim()) {
+                                motorTypes.add(motorPart.trim());
+                            }
+                        }
+                    }
+                });
+                
+                // Motor tiplerini dropdown'a ekle
+                Array.from(motorTypes).sort().forEach(motorType => {
+                    console.log('🟡 Adding motor type:', motorType);
+                    const option = document.createElement('option');
+                    option.value = motorType;
+                    option.textContent = motorType;
+                    modelFilter.appendChild(option);
+                });
+                
+                if (shouldApplyFilters) {
+                    console.log('🐛 DEBUG - handleSubModelChange calling applyFilters (motor types)');
+                    applyFilters(true);
+                }
+                return;
+            }
+            
+            // Get models for the selected brand and series
+            const brandModels = filtersData.models.filter(m => m.brand === brand);
+            let seriesModels = brandModels.filter(modelData => {
+                if (series === 'A1') {
+                    // A1 models don't start with "A1", they are like "1.6 TDI Sport", "1.4 TFSI Ambition" etc.
+                    const model = modelData.model;
+                    return (model.includes('1.4 TFSI') || model.includes('1.6 TDI')) && 
+                           !model.match(/^A[0-9]/);
+                }
+                return modelData.model && modelData.model.startsWith(series + ' ');
+            });
+            
+            // console.log('handleSubModelChange - seriesModels for', series, ':', seriesModels.length);
+            
+            // Handle A1 special filtering
+            if (series === 'A1' && subModel.match(/\d+\.\d+\s+(TFSI|TDI|FSI)/i)) {
+                console.log('✅ A1 SPECIAL HANDLING TRIGGERED for:', subModel);
+                // For A1 engine categories, filter differently
+                const subModelModels = seriesModels.filter(modelData => {
+                    const engineParts = subModel.split(' ');
+                    const engineSize = engineParts[0]; // e.g., "1.6"
+                    const engineType = engineParts[1]; // e.g., "TDI"
+                    
+                    return modelData.model.includes(engineSize) && 
+                           modelData.model.toUpperCase().includes(engineType.toUpperCase());
+                });
+                
+                // Populate model filter
+                modelFilter.disabled = false;
+                modelFilter.innerHTML = '<option value="">Tüm Modeller</option>';
+                
+                console.log('A1 subModelModels found:', subModelModels.length);
+                subModelModels.forEach((modelData, index) => {
+                    const option = document.createElement('option');
+                    option.value = modelData.model;
+                    option.textContent = `${modelData.model} (${modelData.count})`;
+                    modelFilter.appendChild(option);
+                });
+                
+                console.log('✅ A1 DROPDOWN POPULATED - Final count:', modelFilter.options.length);
+                applyFilters(true); // Apply filters for A1 subModel selection
+                return; // Exit early for A1
+            }
+            
+            // Filter by sub-model (dynamic) - for non-A1 series
+            const subModelModels = seriesModels.filter(modelData => {
+                let searchPattern = `${series} ${subModel}`;
+                
+                // Special handling for multi-word categories
+                if (subModel === 'Allroad quattro') {
+                    searchPattern = `${series} Allroad`;
+                }
+                
+                return modelData.model.includes(searchPattern);
+            });
+            
+            // Populate model filter
+            modelFilter.disabled = false;
+            modelFilter.innerHTML = '<option value="">Tüm Modeller</option>';
+            
+            subModelModels.forEach(modelData => {
+                const option = document.createElement('option');
+                option.value = modelData.model;
+                option.textContent = `${modelData.model} (${modelData.count})`;
+                modelFilter.appendChild(option);
+            });
+            
+            applyFilters(true);
+        }
+        
+        function populateModelFilter(series, seriesModels) {
+            const modelFilter = document.getElementById('modelFilterSide');
+            modelFilter.disabled = false;
+            modelFilter.innerHTML = '<option value="">Tüm Modeller</option>';
+            
+            // Regular model listing for all series
+            seriesModels.forEach(modelData => {
+                const option = document.createElement('option');
+                option.value = modelData.model;
+                option.textContent = `${modelData.model} (${modelData.count})`;
+                modelFilter.appendChild(option);
+            });
+        }
+
+        // Populate year filters - no longer needed since we use input fields
+        function populateYearFilter() {
+            // Input fields don't need population, they're already configured with min/max
+            console.log('🔧 Year filters are now input fields, no population needed');
+        }
+
+        // Populate city filter
+        function populateCityFilter() {
+            const cityFilterList = document.getElementById('cityFilterList');
+            
+            if (!filtersData.cities || filtersData.cities.length === 0) {
+                cityFilterList.innerHTML = '<div class="text-center text-gray-500 py-2">Şehir verisi yok</div>';
+                return;
+            }
+            
+            // Sort cities by count (descending) and show top 20
+            const topCities = filtersData.cities
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 20);
+            
+            cityFilterList.innerHTML = topCities.map(item => `
+                <label class="flex items-center hover:bg-gray-50 px-2 py-1 rounded cursor-pointer">
+                    <input type="checkbox" value="${item.city}" onchange="applyFilters(true)" class="city-checkbox mr-2 text-blue-600">
+                    <span class="text-xs text-gray-700 flex-1">${item.city}</span>
+                    <span class="text-xs text-gray-500 ml-1">(${item.count})</span>
+                </label>
+            `).join('');
+        }
+
+        // Update city filter based on current selections
+        async function updateCityFilter() {
+            const brand = document.getElementById('brandFilterSide').value;
+            const series = document.getElementById('seriesFilterSide').value;
+            const subModel = document.getElementById('subModelFilterSide').value;
+            const model = document.getElementById('modelFilterSide').value;
+            
+            // Get ALL active filters for city filtering
+            const yearMin = document.getElementById('yearMinFilter').value;
+            const yearMax = document.getElementById('yearMaxFilter').value;
+            const kmMin = document.getElementById('kmMinFilter').value;
+            const kmMax = document.getElementById('kmMaxFilter').value;
+            const priceMin = document.getElementById('priceMin').value;
+            const priceMax = document.getElementById('priceMax').value;
+            
+            // Get selected fuel and transmission
+            const selectedFuels = Array.from(document.querySelectorAll('.fuel-checkbox:checked')).map(cb => cb.value);
+            const selectedTransmissions = Array.from(document.querySelectorAll('.gear-checkbox:checked')).map(cb => cb.value);
+            
+            // Store currently selected cities before updating
+            const selectedCities = Array.from(document.querySelectorAll('.city-checkbox:checked')).map(cb => cb.value);
+            console.log('🏙️ Currently selected cities before update:', selectedCities);
+            
+            console.log('🏙️ FRONTEND - Form element values:', {brand, series, subModel, model});
+            console.log('🏙️ FRONTEND - Current URL:', window.location.pathname);
+            console.log('🏙️ FRONTEND - Will make API call:', !!(brand || series || subModel || model));
+            
+            const cityFilterList = document.getElementById('cityFilterList');
+            cityFilterList.innerHTML = '<div class="text-center text-gray-500 py-2"><i class="fas fa-spinner fa-spin"></i> Şehirler güncelleniyor...</div>';
+            
+            try {
+                console.log('🏙️ FRONTEND - Starting API call preparation...');
+                const params = new URLSearchParams();
+                if (brand) {
+                    console.log('🏙️ FRONTEND - Adding brand param:', brand);
+                    params.append('brand', brand);
+                }
+                if (series) {
+                    console.log('🏙️ FRONTEND - Adding series param:', series);
+                    params.append('series', series);
+                }
+                if (subModel) {
+                    console.log('🏙️ FRONTEND - Adding subModel param:', subModel);
+                    params.append('subModel', subModel);
+                }
+                if (model) {
+                    console.log('🏙️ FRONTEND - Adding model param:', model);
+                    params.append('model', model);
+                }
+                
+                // Add ALL filter parameters for city filtering
+                if (yearMin) params.append('yearMin', yearMin);
+                if (yearMax) params.append('yearMax', yearMax);
+                if (kmMin) params.append('kmMin', kmMin);
+                if (kmMax) params.append('kmMax', kmMax);
+                if (priceMin) params.append('priceMin', priceMin);
+                if (priceMax) params.append('priceMax', priceMax);
+                
+                // Add fuel types
+                if (selectedFuels.length > 0) {
+                    selectedFuels.forEach(fuel => params.append('fuel', fuel));
+                }
+                
+                // Add transmission types
+                if (selectedTransmissions.length > 0) {
+                    selectedTransmissions.forEach(trans => params.append('transmission', trans));
+                }
+                
+                console.log('🏙️ FRONTEND - All params for city filter:', params.toString());
+                
+                console.log('🏙️ FRONTEND - API call URL:', `${API_BASE}/cars/cities?${params}`);
+                
+                const response = await fetch(`${API_BASE}/cars/cities?${params}`);
+                if (!response.ok) throw new Error('Cities fetch failed');
+                
+                const data = await response.json();
+                console.log('🏙️ FRONTEND - API response:', data);
+                if (data.success && data.cities.length > 0) {
+                    cityFilterList.innerHTML = data.cities.map(item => {
+                        const isChecked = selectedCities.includes(item.city) ? 'checked' : '';
+                        return `
+                            <label class="flex items-center hover:bg-gray-50 px-2 py-1 rounded cursor-pointer">
+                                <input type="checkbox" value="${item.city}" onchange="applyFilters(true)" class="city-checkbox mr-2 text-blue-600" ${isChecked}>
+                                <span class="text-xs text-gray-700 flex-1">${item.city}</span>
+                                <span class="text-xs text-gray-500 ml-1">(${item.count})</span>
+                            </label>
+                        `;
+                    }).join('');
+                    console.log('🏙️ Updated cities:', data.cities.length, 'cities found');
+                    console.log('🏙️ Re-checked cities:', selectedCities.filter(city => data.cities.some(c => c.city === city)));
+                } else {
+                    console.log('🏙️ FRONTEND - No cities found or API call failed');
+                    cityFilterList.innerHTML = '<div class="text-center text-gray-500 py-2">Bu seçimde şehir bulunamadı</div>';
+                }
+            } catch (error) {
+                console.error('Error updating cities:', error);
+                cityFilterList.innerHTML = '<div class="text-center text-red-500 py-2">Şehirler yüklenemedi</div>';
+            }
+        }
+
+        // Apply filters
+        function applyFilters(resetPage = false) {
+            console.log('🐛 DEBUG - applyFilters called, resetPage:', resetPage);
+            console.log('🐛 DEBUG - loadingFromUrl flag:', window.loadingFromUrl);
+            
+            // Prevent API calls while loading from URL
+            if (window.loadingFromUrl) {
+                console.log('🐛 DEBUG - Skipping applyFilters because loadingFromUrl is true');
+                return;
+            }
+            
+            const brand = document.getElementById('brandFilterSide').value;
+            if (!brand) {
+                document.getElementById('tableContainer').style.display = 'none';
+                return;
+            }
+            
+            // Reset to first page when filters change (not when pagination changes)
+            if (resetPage) {
+                currentPage = 1;
+            }
+            
+            // Show loading state
+            document.getElementById('tableContainer').style.display = 'block';
+            const tbody = document.querySelector('tbody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center">🔄 Yükleniyor...</td></tr>';
+            }
+            
+            const series = document.getElementById('seriesFilterSide').value;
+            let subModel = document.getElementById('subModelFilterSide').value;
+            const model = document.getElementById('modelFilterSide').value;
+            
+            // Use body type filter from URL if no dropdown selection
+            if (!subModel && window.urlBodyTypeFilter) {
+                subModel = window.urlBodyTypeFilter;
+                console.log('🔍 Using body type filter from URL:', subModel);
+            }
+            
+            console.log('🔍 Filter Values - Series:', series, 'SubModel:', subModel, 'Model:', model);
+            console.log('🐛 DEBUG - Current dropdown values:', {
+                brandValue: document.getElementById('brandFilterSide').value,
+                seriesValue: document.getElementById('seriesFilterSide').value,
+                subModelValue: document.getElementById('subModelFilterSide').value,
+                modelValue: document.getElementById('modelFilterSide').value
+            });
+            
+            // Update URL based on current filters (only if not loading from URL)
+            console.log('🔧 loadingFromUrl flag:', window.loadingFromUrl);
+            if (!window.loadingFromUrl) {
+                console.log('🔧 Calling updateUrlFromFilters...');
+                window.updateUrlFromFilters(brand, series, subModel, model);
+            } else {
+                console.log('🔧 Skipping URL update (loading from URL)');
+            }
+            
+            const yearMin = document.getElementById('yearMinFilter').value;
+            const yearMax = document.getElementById('yearMaxFilter').value;
+            const kmMin = document.getElementById('kmMinFilter').value;
+            const kmMax = document.getElementById('kmMaxFilter').value;
+            const priceMin = document.getElementById('priceMin').value;
+            const priceMax = document.getElementById('priceMax').value;
+            
+            // Get checked fuel types
+            const fuelCheckboxes = document.querySelectorAll('.fuel-checkbox:checked');
+            const selectedFuels = Array.from(fuelCheckboxes).map(cb => cb.value);
+            
+            // Get checked gear types
+            const gearCheckboxes = document.querySelectorAll('.gear-checkbox:checked');
+            const selectedGears = Array.from(gearCheckboxes).map(cb => cb.value);
+            
+            // Get checked cities
+            const cityCheckboxes = document.querySelectorAll('.city-checkbox:checked');
+            const selectedCities = Array.from(cityCheckboxes).map(cb => cb.value);
+            
+            
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Build API query parameters
+            const params = new URLSearchParams();
+            if (brand) params.append('brand', brand);
+            if (series) params.append('series', series);  
+            if (subModel) params.append('subModel', subModel);
+            if (model) params.append('model', model);
+            if (yearMin) {
+                console.log('📅 Adding yearMin:', yearMin);
+                params.append('yearMin', yearMin);
+            }
+            if (yearMax) {
+                console.log('📅 Adding yearMax:', yearMax);
+                params.append('yearMax', yearMax);
+            }
+            if (kmMin) {
+                console.log('🚗 Adding kmMin:', kmMin);
+                params.append('minKm', kmMin);
+            }
+            if (kmMax) {
+                console.log('🚗 Adding kmMax:', kmMax);
+                params.append('maxKm', kmMax);
+            }
+            if (priceMin) {
+                console.log('🏷️ Adding minPrice:', priceMin);
+                params.append('minPrice', priceMin);
+            }
+            if (priceMax) {
+                console.log('🏷️ Adding maxPrice:', priceMax);
+                params.append('maxPrice', priceMax);
+            }
+            if (search) params.append('search', search);
+            
+            // Add fuel filters
+            if (selectedFuels.length > 0) params.append('fuel', selectedFuels.join(','));
+            
+            // Add gear filters
+            if (selectedGears.length > 0) params.append('transmission', selectedGears.join(','));
+            
+            // Add city filters
+            if (selectedCities.length > 0) params.append('city', selectedCities.join(','));
+            
+            
+            // Add pagination
+            params.append('page', currentPage);
+            params.append('pageSize', 20);
+            
+            // Add sorting
+            params.append('sortBy', currentSort.field);
+            params.append('sortOrder', currentSort.order.toUpperCase());
+            
+            // Fetch filtered data from backend
+            const apiUrl = `${API_BASE}/cars/search?${params.toString()}`;
+            console.log('API Request URL:', apiUrl);
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update global variables
+                        filteredCars = data.results || [];
+                        totalResults = data.totalCount || 0;
+                        totalPages = data.pagination ? data.pagination.totalPages : 1;
+                        
+                        // Update statistics
+                        document.getElementById('totalCount').textContent = totalResults.toLocaleString();
+                        console.log('📊 Frontend avgPrice:', data.statistics.avgPrice);
+                        const formattedPrice = data.statistics.avgPrice.toLocaleString('tr-TR') + ' ₺';
+                        console.log('📊 Formatted price:', formattedPrice);
+                        document.getElementById('avgPrice').textContent = formattedPrice;
+                        
+                        // Update min/max prices from backend
+                        document.getElementById('minPrice').textContent = data.statistics.minPrice.toLocaleString('tr-TR') + ' ₺';
+                        document.getElementById('maxPrice').textContent = data.statistics.maxPrice.toLocaleString('tr-TR') + ' ₺';
+                        
+                        // Update page count (number of cars shown on this page)
+                        document.getElementById('filteredCount').textContent = filteredCars.length;
+                        
+                        console.log('🚗 filteredCars count:', filteredCars.length);
+                        console.log('🚗 calling displayTable...');
+                        displayTable();
+                        console.log('🚗 displayTable called');
+                        
+                        // Hide the main loading spinner
+                        document.getElementById('loading').style.display = 'none';
+                        
+                        updatePagination(data.pagination);
+                        // updateStatistics(); // REMOVED: Don't recalculate stats from page data
+                        
+                        // Update URL to reflect current filters
+                        updateUrlFromFilters();
+                        
+                        // Update city filter after successful data fetch
+                        console.log('🚗 Calling updateCityFilter from applyFilters success');
+                        updateCityFilter();
+                    } else {
+                        console.error('API Error:', data.error);
+                        document.querySelector('tbody').innerHTML = '<tr><td colspan="10" class="text-center text-red-500">❌ Hata: Veriler yüklenemedi</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch Error:', error);
+                    document.querySelector('tbody').innerHTML = '<tr><td colspan="10" class="text-center text-red-500">❌ Hata: ' + error.message + '</td></tr>';
+                });
+            
+        }
+
+        // Sort table
+        function sortTable(field) {
+            // Update sort parameters
+            if (currentSort.field === field) {
+                currentSort.order = currentSort.order === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.field = field;
+                currentSort.order = 'asc';
+            }
+            
+            // Reset to first page when sorting
+            currentPage = 1;
+            
+            // Fetch new sorted data from backend
+            applyFilters();
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            if (filteredCars.length === 0) {
+                document.getElementById('avgPrice').textContent = '0 ₺';
+                document.getElementById('minPrice').textContent = '0 ₺';
+                document.getElementById('maxPrice').textContent = '0 ₺';
+                document.getElementById('filteredCount').textContent = '0';
+                return;
+            }
+            
+            const prices = filteredCars.map(car => car.fiyat).filter(p => p > 0);
+            if (prices.length > 0) {
+                const avg = prices.reduce((sum, p) => sum + p, 0) / prices.length;
+                const min = Math.min(...prices);
+                const max = Math.max(...prices);
+                
+                document.getElementById('avgPrice').textContent = formatPrice(avg);
+                document.getElementById('minPrice').textContent = formatPrice(min);
+                document.getElementById('maxPrice').textContent = formatPrice(max);
+            }
+            
+            document.getElementById('filteredCount').textContent = filteredCars.length;
+        }
+
+        // Display table
+        function displayTable() {
+            console.log('📋 displayTable called with filteredCars.length:', filteredCars.length);
+            if (filteredCars.length === 0) {
+                console.log('📋 No cars to display, hiding table');
+                document.getElementById('tableContainer').style.display = 'none';
+                document.getElementById('noResults').style.display = 'block';
+                return;
+            }
+            
+            document.getElementById('noResults').style.display = 'none';
+            document.getElementById('tableContainer').style.display = 'block';
+            
+            const tbody = document.getElementById('tableBody');
+            console.log('📋 tbody element found:', !!tbody);
+            console.log('📋 generating HTML for', filteredCars.length, 'cars');
+            
+            try {
+                const htmlContent = filteredCars.map(car => {
+                    console.log('📋 Processing car:', car.ilanNo || 'Unknown');
+                    const totalDamage = (car.paintedPartsCount || 0) + (car.changedPartsCount || 0);
+                    const damageClass = totalDamage === 0 ? 'green' : totalDamage <= 2 ? 'yellow' : 'red';
+                    const damageText = totalDamage === 0 ? 'Boyasız' : 
+                        `${car.paintedPartsCount || 0} Boya, ${car.changedPartsCount || 0} Değişen`;
+                
+                return `
+                    <tr class="hover-row">
+                        <td class="px-4 py-3">
+                            <div class="text-sm font-medium text-gray-900">
+                                ${car.title || `${car.marka} ${car.model}`}
+                            </div>
+                            <div class="text-xs text-gray-500">#${car.ilanNo}</div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-700">
+                            ${car.model} ${car.seri || ''}
+                        </td>
+                        <td class="px-4 py-3 text-center text-sm">${car.yil}</td>
+                        <td class="px-4 py-3 text-center text-sm">${car.km}</td>
+                        <td class="px-4 py-3 text-center">
+                            <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
+                                ${car.yakit}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center text-sm">${car.vites}</td>
+                        <td class="px-4 py-3 text-center">
+                            <span class="px-2 py-1 text-xs rounded-full damage-badge-${damageClass}">
+                                ${damageText}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center text-xs text-gray-600">
+                            ${car.featureCounts.guvenlik > 0 ? `<i class="fas fa-shield-alt"></i> ${car.featureCounts.guvenlik}` : ''}
+                            ${car.featureCounts.icDonanim > 0 ? `<i class="fas fa-couch ml-2"></i> ${car.featureCounts.icDonanim}` : ''}
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <div class="text-lg font-bold text-green-600">${formatPrice(car.fiyat)}</div>
+                            <div class="text-xs text-gray-500">${car.location?.split(' / ')[0] || ''}</div>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button onclick='showDetail(${JSON.stringify(car).replace(/'/g, "&apos;")})' 
+                                    class="text-blue-600 hover:text-blue-800 mr-2">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                            <a href="${car.url}" target="_blank" 
+                               class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                `;
+                });
+                
+                console.log('📋 HTML content generated, length:', htmlContent.length);
+                tbody.innerHTML = htmlContent.join('');
+                console.log('📋 tbody updated successfully');
+                
+                // Force hide loading spinner
+                const loadingDiv = document.getElementById('loading');
+                if (loadingDiv) {
+                    loadingDiv.style.display = 'none';
+                }
+                
+                // Hide only loading text elements (not entire containers)
+                const loadingTextElements = document.querySelectorAll('td, div');
+                loadingTextElements.forEach(el => {
+                    if (el.textContent && el.textContent.trim() === 'Veriler yükleniyor...') {
+                        console.log('📋 Hiding loading text element:', el);
+                        el.style.display = 'none';
+                    }
+                });
+                
+            } catch (error) {
+                console.error('📋 Error generating table HTML:', error);
+                tbody.innerHTML = '<tr><td colspan="10" class="text-center text-red-500">❌ Tablo yüklenirken hata oluştu</td></tr>';
+            }
+        }
+
+        // Format price
+        function formatPrice(price) {
+            if (!price) return '0 ₺';
+            return new Intl.NumberFormat('tr-TR').format(Math.round(price)) + ' ₺';
+        }
+
+        // Show detail modal
+        function showDetail(car) {
+            document.getElementById('modalTitle').textContent = 
+                `${car.marka} ${car.model} ${car.seri || ''} - ${car.yil}`;
+            
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <!-- Price and Main Info -->
+                <div class="bg-green-50 rounded-lg p-6 mb-6">
+                    <div class="text-3xl font-bold text-green-600 mb-2">${formatPrice(car.fiyat)}</div>
+                    <div class="text-gray-700">${car.title || 'İlan başlığı yok'}</div>
+                    <div class="text-sm text-gray-500 mt-2">İlan No: ${car.ilanNo}</div>
+                </div>
+                
+                <!-- Damage Report -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold mb-3">
+                        <i class="fas fa-car-crash text-orange-500"></i> Hasar Durumu
+                    </h3>
+                    
+                    <!-- Hasar İstatistikleri -->
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="bg-green-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-green-600">${Object.values(car.paintDamage?.damage_areas || {}).filter(s => s === 'Original').length}</div>
+                            <div class="text-sm text-green-700">Orijinal</div>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-yellow-600">${car.paintedPartsCount || 0}</div>
+                            <div class="text-sm text-yellow-700">Boyalı</div>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-red-600">${car.changedPartsCount || 0}</div>
+                            <div class="text-sm text-red-700">Değişen</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Araç Diyagramı -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <div class="flex justify-center mb-4">
+                            <svg viewBox="0 0 500 700" class="w-full max-w-md h-auto">
+                                <!-- Araba ana gövdesi -->
+                                <g id="car-body">
+                                    <!-- Ön tampon -->
+                                    <ellipse cx="250" cy="120" rx="90" ry="25" 
+                                            fill="${getPartColor(car.paintDamage?.damage_areas?.['Front Bumper'])}" 
+                                            stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Front Bumper'])}" 
+                                            stroke-width="3" class="car-part"/>
+                                    <text x="250" y="125" text-anchor="middle" class="text-sm fill-white font-semibold">Ön Tampon</text>
+                                    
+                                    <!-- Motor kaputu -->
+                                    <path d="M 170 145 Q 170 160 180 170 L 320 170 Q 330 160 330 145 L 330 200 Q 330 210 320 220 L 180 220 Q 170 210 170 200 Z" 
+                                          fill="${getPartColor(car.paintDamage?.damage_areas?.['Front Hood'])}" 
+                                          stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Front Hood'])}" 
+                                          stroke-width="3" class="car-part"/>
+                                    <text x="250" y="190" text-anchor="middle" class="text-sm fill-white font-semibold">Motor Kaputu</text>
+                                    
+                                    <!-- Sol ön çamurluk -->
+                                    <ellipse cx="150" cy="200" rx="30" ry="45" 
+                                            fill="${getPartColor(car.paintDamage?.damage_areas?.['Front Left Mudguard'])}" 
+                                            stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Front Left Mudguard'])}" 
+                                            stroke-width="3" class="car-part"/>
+                                    <text x="150" y="205" text-anchor="middle" class="text-xs fill-white font-semibold" transform="rotate(-90, 150, 205)">Sol Ön Ç.</text>
+                                    
+                                    <!-- Sağ ön çamurluk -->
+                                    <ellipse cx="350" cy="200" rx="30" ry="45" 
+                                            fill="${getPartColor(car.paintDamage?.damage_areas?.['Front Right Mudguard'])}" 
+                                            stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Front Right Mudguard'])}" 
+                                            stroke-width="3" class="car-part"/>
+                                    <text x="350" y="205" text-anchor="middle" class="text-xs fill-white font-semibold" transform="rotate(90, 350, 205)">Sağ Ön Ç.</text>
+                                    
+                                    <!-- Ana kabin -->
+                                    <rect x="180" y="220" width="140" height="200" 
+                                          fill="#e5e7eb" stroke="#9ca3af" stroke-width="2" rx="15"/>
+                                    
+                                    <!-- Sol ön kapı -->
+                                    <rect x="140" y="250" width="40" height="70" 
+                                          fill="${getPartColor(car.paintDamage?.damage_areas?.['Front Left Door'])}" 
+                                          stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Front Left Door'])}" 
+                                          stroke-width="3" rx="12" class="car-part"/>
+                                    <text x="160" y="290" text-anchor="middle" class="text-xs fill-white font-semibold" transform="rotate(-90, 160, 290)">Sol Ön Kapı</text>
+                                    
+                                    <!-- Sağ ön kapı -->
+                                    <rect x="320" y="250" width="40" height="70" 
+                                          fill="${getPartColor(car.paintDamage?.damage_areas?.['Front Right Door'])}" 
+                                          stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Front Right Door'])}" 
+                                          stroke-width="3" rx="12" class="car-part"/>
+                                    <text x="340" y="290" text-anchor="middle" class="text-xs fill-white font-semibold" transform="rotate(90, 340, 290)">Sağ Ön Kapı</text>
+                                    
+                                    <!-- Tavan -->
+                                    <rect x="190" y="230" width="120" height="180" 
+                                          fill="${getPartColor(car.paintDamage?.damage_areas?.['Roof'])}" 
+                                          stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Roof'])}" 
+                                          stroke-width="3" rx="8" class="car-part"/>
+                                    <text x="250" y="325" text-anchor="middle" class="text-sm fill-white font-semibold">Tavan</text>
+                                    
+                                    <!-- Sol arka kapı -->
+                                    <rect x="140" y="350" width="40" height="70" 
+                                          fill="${getPartColor(car.paintDamage?.damage_areas?.['Rear Left Door'])}" 
+                                          stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Rear Left Door'])}" 
+                                          stroke-width="3" rx="12" class="car-part"/>
+                                    <text x="160" y="390" text-anchor="middle" class="text-xs fill-white font-semibold" transform="rotate(-90, 160, 390)">Sol Arka Kapı</text>
+                                    
+                                    <!-- Sağ arka kapı -->
+                                    <rect x="320" y="350" width="40" height="70" 
+                                          fill="${getPartColor(car.paintDamage?.damage_areas?.['Rear Right Door'])}" 
+                                          stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Rear Right Door'])}" 
+                                          stroke-width="3" rx="12" class="car-part"/>
+                                    <text x="340" y="390" text-anchor="middle" class="text-xs fill-white font-semibold" transform="rotate(90, 340, 390)">Sağ Arka Kapı</text>
+                                    
+                                    <!-- Sol arka çamurluk -->
+                                    <ellipse cx="150" cy="480" rx="30" ry="45" 
+                                            fill="${getPartColor(car.paintDamage?.damage_areas?.['Rear Left Mudguard'])}" 
+                                            stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Rear Left Mudguard'])}" 
+                                            stroke-width="3" class="car-part"/>
+                                    <text x="150" y="485" text-anchor="middle" class="text-xs fill-white font-semibold" transform="rotate(-90, 150, 485)">Sol Arka Ç.</text>
+                                    
+                                    <!-- Sağ arka çamurluk -->
+                                    <ellipse cx="350" cy="480" rx="30" ry="45" 
+                                            fill="${getPartColor(car.paintDamage?.damage_areas?.['Rear Right Mudguard'])}" 
+                                            stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Rear Right Mudguard'])}" 
+                                            stroke-width="3" class="car-part"/>
+                                    <text x="350" y="485" text-anchor="middle" class="text-xs fill-white font-semibold" transform="rotate(90, 350, 485)">Sağ Arka Ç.</text>
+                                    
+                                    <!-- Bagaj kapağı -->
+                                    <path d="M 170 420 Q 170 430 180 440 L 320 440 Q 330 430 330 420 L 330 500 Q 330 510 320 520 L 180 520 Q 170 510 170 500 Z" 
+                                          fill="${getPartColor(car.paintDamage?.damage_areas?.['Rear Hood'])}" 
+                                          stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Rear Hood'])}" 
+                                          stroke-width="3" class="car-part"/>
+                                    <text x="250" y="475" text-anchor="middle" class="text-sm fill-white font-semibold">Bagaj Kapağı</text>
+                                    
+                                    <!-- Arka tampon -->
+                                    <ellipse cx="250" cy="560" rx="90" ry="25" 
+                                            fill="${getPartColor(car.paintDamage?.damage_areas?.['Rear Bumper'])}" 
+                                            stroke="${getPartStroke(car.paintDamage?.damage_areas?.['Rear Bumper'])}" 
+                                            stroke-width="3" class="car-part"/>
+                                    <text x="250" y="565" text-anchor="middle" class="text-sm fill-white font-semibold">Arka Tampon</text>
+                                    
+                                    <!-- Tekerlekler -->
+                                    <circle cx="180" cy="230" r="25" fill="#2d3748" stroke="#1a202c" stroke-width="2"/>
+                                    <circle cx="320" cy="230" r="25" fill="#2d3748" stroke="#1a202c" stroke-width="2"/>
+                                    <circle cx="180" cy="500" r="25" fill="#2d3748" stroke="#1a202c" stroke-width="2"/>
+                                    <circle cx="320" cy="500" r="25" fill="#2d3748" stroke="#1a202c" stroke-width="2"/>
+                                    
+                                    <!-- Tekerlek jantları -->
+                                    <circle cx="180" cy="230" r="15" fill="#4a5568" stroke="#2d3748" stroke-width="1"/>
+                                    <circle cx="320" cy="230" r="15" fill="#4a5568" stroke="#2d3748" stroke-width="1"/>
+                                    <circle cx="180" cy="500" r="15" fill="#4a5568" stroke="#2d3748" stroke-width="1"/>
+                                    <circle cx="320" cy="500" r="15" fill="#4a5568" stroke="#2d3748" stroke-width="1"/>
+                                    
+                                    <!-- Cam detayları -->
+                                    <ellipse cx="250" cy="280" rx="45" ry="25" fill="#87ceeb" stroke="#4682b4" stroke-width="1" opacity="0.6"/>
+                                    <text x="250" y="285" text-anchor="middle" class="text-xs fill-blue-700 font-medium">Ön Cam</text>
+                                    
+                                    <ellipse cx="250" cy="380" rx="45" ry="25" fill="#87ceeb" stroke="#4682b4" stroke-width="1" opacity="0.6"/>
+                                    <text x="250" y="385" text-anchor="middle" class="text-xs fill-blue-700 font-medium">Arka Cam</text>
+                                </g>
+                                
+                                <!-- Hover efektleri için -->
+                                <style>
+                                    .car-part:hover {
+                                        filter: brightness(1.1);
+                                        cursor: pointer;
+                                        stroke-width: 4;
+                                    }
+                                </style>
+                            </svg>
+                        </div>
+                        
+                        <!-- Parça Detayları -->
+                        <div class="grid grid-cols-3 gap-2">
+                            ${Object.entries(car.paintDamage?.damage_areas || {}).map(([part, status]) => `
+                                <div class="p-2 text-center rounded text-xs ${
+                                    status === 'Original' ? 'bg-green-100 text-green-700' :
+                                    status === 'Boyalı' ? 'bg-yellow-100 text-yellow-700' :
+                                    'bg-red-100 text-red-700'
+                                }">
+                                    <div class="font-medium">${translatePart(part)}</div>
+                                    <div class="mt-1">${status}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technical Specs -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold mb-3">
+                        <i class="fas fa-cog text-blue-500"></i> Teknik Özellikler
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><span class="font-medium">Motor Gücü:</span> ${car.motorGucu || '-'}</div>
+                        <div><span class="font-medium">Motor Hacmi:</span> ${car.motorHacmi || '-'}</div>
+                        <div><span class="font-medium">Çekiş:</span> ${car.cekis || '-'}</div>
+                        <div><span class="font-medium">Kasa Tipi:</span> ${car.kasaTipi || '-'}</div>
+                        <div><span class="font-medium">Renk:</span> ${car.renk || '-'}</div>
+                        <div><span class="font-medium">Garanti:</span> ${car.garanti || '-'}</div>
+                        <div><span class="font-medium">Takas:</span> ${car.takas || '-'}</div>
+                        <div><span class="font-medium">Ağır Hasar:</span> ${car.agirHasar || '-'}</div>
+                    </div>
+                </div>
+                
+                <!-- Features -->
+                ${car.features ? `
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold mb-3">
+                        <i class="fas fa-list text-purple-500"></i> Donanım Özellikleri
+                    </h3>
+                    <div class="space-y-3">
+                        ${Object.entries(car.features).map(([category, items]) => `
+                            ${items.filter(f => f.checked).length > 0 ? `
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-2">${translateCategory(category)}</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    ${items.filter(f => f.checked).map(feature => `
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
+                                            ${feature.name}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                
+                <!-- Actions -->
+                <div class="flex gap-3">
+                    <a href="${car.url}" target="_blank" 
+                       class="flex-1 bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700">
+                        <i class="fas fa-external-link-alt"></i> İlanı Görüntüle
+                    </a>
+                    <button onclick="closeModal()" 
+                            class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                        Kapat
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        // Clear all filters
+        function clearAllFilters() {
+            document.getElementById('brandFilterSide').value = '';
+            document.getElementById('modelFilterSide').innerHTML = '<option value="">Önce Marka Seç</option>';
+            document.getElementById('modelFilterSide').disabled = true;
+            document.getElementById('yearMinFilter').value = '';
+            document.getElementById('yearMaxFilter').value = '';
+            document.getElementById('priceMin').value = '';
+            document.getElementById('priceMax').value = '';
+            document.getElementById('searchInput').value = '';
+            
+            // Clear checkboxes
+            document.querySelectorAll('.fuel-checkbox').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.gear-checkbox').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.city-checkbox').forEach(cb => cb.checked = false);
+            
+            
+            document.getElementById('selectBrand').style.display = 'block';
+            document.getElementById('tableContainer').style.display = 'none';
+        }
+
+        // Helper functions
+        function translatePart(part) {
+            const translations = {
+                'Front Bumper': 'Ön Tampon',
+                'Front Hood': 'Motor Kaputu',
+                'Front Left Door': 'Sol Ön Kapı',
+                'Front Right Door': 'Sağ Ön Kapı',
+                'Front Left Mudguard': 'Sol Ön Çamurluk',
+                'Front Right Mudguard': 'Sağ Ön Çamurluk',
+                'Rear Bumper': 'Arka Tampon',
+                'Rear Hood': 'Bagaj Kapağı',
+                'Rear Left Door': 'Sol Arka Kapı',
+                'Rear Right Door': 'Sağ Arka Kapı',
+                'Rear Left Mudguard': 'Sol Arka Çamurluk',
+                'Rear Right Mudguard': 'Sağ Arka Çamurluk',
+                'Roof': 'Tavan'
+            };
+            return translations[part] || part;
+        }
+
+        function translateCategory(category) {
+            const translations = {
+                'guvenlik': 'Güvenlik',
+                'ic_donanim': 'İç Donanım',
+                'dis_donanim': 'Dış Donanım',
+                'multimedya': 'Multimedya'
+            };
+            return translations[category] || category;
+        }
+
+        // Get part color for SVG
+        function getPartColor(status) {
+            switch(status) {
+                case 'Original': return '#10b981'; // green-500
+                case 'Boyalı': return '#f59e0b'; // yellow-500
+                case 'Değişen': return '#ef4444'; // red-500
+                default: return '#6b7280'; // gray-500
+            }
+        }
+
+        // Get part stroke color for SVG
+        function getPartStroke(status) {
+            switch(status) {
+                case 'Original': return '#047857'; // green-700
+                case 'Boyalı': return '#d97706'; // yellow-600
+                case 'Değişen': return '#dc2626'; // red-600
+                default: return '#4b5563'; // gray-600
+            }
+        }
+
+        // Pagination functions
+        function updatePagination(pagination) {
+            const { currentPage: page, totalPages, pageSize, hasNext, hasPrev } = pagination;
+            
+            // Update info text
+            const start = (page - 1) * pageSize + 1;
+            const end = Math.min(page * pageSize, totalResults);
+            document.getElementById('paginationTotal').textContent = totalResults.toLocaleString();
+            document.getElementById('paginationRange').textContent = `${start}-${end}`;
+            
+            // Update buttons
+            document.getElementById('prevPageBtn').disabled = !hasPrev;
+            document.getElementById('nextPageBtn').disabled = !hasNext;
+            
+            // Update page numbers
+            const pageNumbers = document.getElementById('pageNumbers');
+            pageNumbers.innerHTML = '';
+            
+            // Show up to 7 page numbers
+            let startPage = Math.max(1, page - 3);
+            let endPage = Math.min(totalPages, page + 3);
+            
+            // Adjust if we're near the beginning or end
+            if (endPage - startPage < 6) {
+                if (startPage === 1) {
+                    endPage = Math.min(totalPages, startPage + 6);
+                } else {
+                    startPage = Math.max(1, endPage - 6);
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.onclick = () => changePage(i);
+                btn.className = `px-3 py-1 text-sm border rounded ${i === page ? 'bg-blue-600 text-white' : 'hover:bg-gray-100'}`;
+                pageNumbers.appendChild(btn);
+            }
+        }
+        
+        function changePage(direction) {
+            if (direction === 'prev' && currentPage > 1) {
+                currentPage--;
+            } else if (direction === 'next' && currentPage < totalPages) {
+                currentPage++;
+            } else if (typeof direction === 'number') {
+                currentPage = direction;
+            }
+            
+            applyFilters(); // Reload with new page
+        }
+
+        // Load on start
+        window.addEventListener('load', async () => {
+            // Check if URL has filters
+            const path = window.location.pathname;
+            const parts = path.split('/').filter(p => p);
+            
+            if (parts.length > 0 && parts[0] !== 'car-analyzer-table.html') {
+                // URL has filters, load directly with filters
+                await loadDataFromUrl();
+            } else {
+                // No URL filters, load normally
+                await loadData();
+            }
+        });
+    </script>
+</body>
+</html>
