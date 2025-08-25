@@ -1,0 +1,9 @@
+{
+  "name": "com.cookiecleaner.nativehost",
+  "description": "Cookie Cleaner Native Host for Botasaurus Integration",
+  "path": "C:\\Users\\emirh\\cookietemizleme\\native_host.py",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://YOUR_EXTENSION_ID_HERE/"
+  ]
+}

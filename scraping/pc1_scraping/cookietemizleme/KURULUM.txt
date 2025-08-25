@@ -1,0 +1,18 @@
+CHROME EKLENTİSİ KURULUM TALİMATLARI
+
+1. Chrome tarayıcısını açın
+
+2. Adres çubuğuna şunu yazın: chrome://extensions/
+
+3. Sağ üstte "Geliştirici modu"nu açın (Developer mode)
+
+4. "Paketlenmemiş öğe yükle" (Load unpacked) butonuna tıklayın
+
+5. Bu klasörü seçin: C:\Users\emirh\cookietemizleme\
+
+6. Eklenti yüklendi! Chrome'un sağ üstünde cookie simgesi görünecek
+
+KULLANIM:
+- Sahibinden.com'a girdiğinizde cookieler otomatik silinir
+- Eklenti simgesine tıklayarak manuel temizlik yapabilirsiniz
+- Yeni siteler ekleyebilir/çıkarabilirsiniz

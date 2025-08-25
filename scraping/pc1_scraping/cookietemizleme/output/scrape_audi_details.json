@@ -1,0 +1,1047 @@
+[
+    {
+        "url": "https://www.sahibinden.com/ilan/vasita-otomobil-audi-kadin-doktordan-sorunsuz-86250-km-kapali-garaj-arabasi-a1-1258465578/detay",
+        "success": true,
+        "title": "www.sahibinden.com",
+        "location": {
+            "city": "Bal\u0131kesir",
+            "district": "Alt\u0131eyl\u00fcl",
+            "neighborhood": "Gaziosmanpa\u015fa Mh.",
+            "full_address": "Bal\u0131kesir / Alt\u0131eyl\u00fcl / Gaziosmanpa\u015fa Mh."
+        },
+        "specs": {
+            "\u0130lan No": "1258465578",
+            "\u0130lan Tarihi": "28 Temmuz 2025",
+            "Marka": "Audi",
+            "Seri": "A1",
+            "Model": "1.6 TDI Attraction",
+            "Y\u0131l": "2014",
+            "Yak\u0131t Tipi": "Dizel",
+            "Vites": "Otomatik",
+            "vehicleCondition": "\u0130kinci El",
+            "KM": "86.250",
+            "Kasa Tipi": "Hatchback 5 kap\u0131",
+            "Motor G\u00fcc\u00fc": "90 hp",
+            "Motor Hacmi": "1598 cc",
+            "\u00c7eki\u015f": "\u00d6nden \u00c7eki\u015f",
+            "Renk": "Beyaz",
+            "Garanti": "Hay\u0131r",
+            "A\u011f\u0131r Hasar Kay\u0131tl\u0131": "Hay\u0131r",
+            "Plaka / Uyruk": "T\u00fcrkiye (TR) Plakal\u0131",
+            "Kimden": "Sahibinden",
+            "Takas": "Hay\u0131r"
+        },
+        "paint_damage": {
+            "painted_parts": [
+                "\u00d6n Tampon",
+                "Sa\u011f \u00d6n \u00c7amurluk",
+                "Sa\u011f \u00d6n Kap\u0131",
+                "Sa\u011f Arka Kap\u0131",
+                "Sa\u011f Arka \u00c7amurluk",
+                "Sol \u00d6n Kap\u0131",
+                "Sol Arka Kap\u0131",
+                "Sol Arka \u00c7amurluk",
+                "Arka Tampon"
+            ],
+            "changed_parts": [
+                "Sol \u00d6n \u00c7amurluk"
+            ],
+            "damage_areas": {
+                "front bumper": "Boyal\u0131",
+                "front hood": "Original",
+                "roof": "Original",
+                "front right mudguard": "Boyal\u0131",
+                "front right door": "Boyal\u0131",
+                "rear right door": "Boyal\u0131",
+                "rear right mudguard": "Boyal\u0131",
+                "front left mudguard": "De\u011fi\u015fen",
+                "front left door": "Boyal\u0131",
+                "rear left door": "Boyal\u0131",
+                "rear left mudguard": "Boyal\u0131",
+                "rear hood": "Original",
+                "rear bumper": "Boyal\u0131"
+            }
+        },
+        "features": {
+            "guvenlik": [
+                {
+                    "name": "ABS",
+                    "checked": true
+                },
+                {
+                    "name": "AEB",
+                    "checked": false
+                },
+                {
+                    "name": "BAS",
+                    "checked": false
+                },
+                {
+                    "name": "\u00c7ocuk Kilidi",
+                    "checked": false
+                },
+                {
+                    "name": "Distronic",
+                    "checked": false
+                },
+                {
+                    "name": "ESP / VSA",
+                    "checked": true
+                },
+                {
+                    "name": "Gece G\u00f6r\u00fc\u015f Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Hava Yast\u0131\u011f\u0131 (S\u00fcr\u00fcc\u00fc)",
+                    "checked": true
+                },
+                {
+                    "name": "Hava Yast\u0131\u011f\u0131 (Yolcu)",
+                    "checked": true
+                },
+                {
+                    "name": "Immobilizer",
+                    "checked": true
+                },
+                {
+                    "name": "Isofix",
+                    "checked": true
+                },
+                {
+                    "name": "K\u00f6r Nokta Uyar\u0131 Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Merkezi Kilit",
+                    "checked": true
+                },
+                {
+                    "name": "\u015eerit Takip Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Yoku\u015f Kalk\u0131\u015f Deste\u011fi",
+                    "checked": true
+                },
+                {
+                    "name": "Yorgunluk Tespit Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Z\u0131rhl\u0131 Ara\u00e7",
+                    "checked": false
+                },
+                {
+                    "name": "ESP (Denge Kontrol\u00fc)",
+                    "checked": true
+                },
+                {
+                    "name": "Yoku\u015fta Kalk\u0131\u015f Deste\u011fi",
+                    "checked": true
+                },
+                {
+                    "name": "Lastik Bas\u0131n\u00e7 Kontrol\u00fc",
+                    "checked": false
+                },
+                {
+                    "name": "Yolcu Hava Yast\u0131\u011f\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "S\u00fcr\u00fcc\u00fc Hava Yast\u0131\u011f\u0131",
+                    "checked": true
+                }
+            ],
+            "ic_donanim": [
+                {
+                    "name": "Hidrolik Direksiyon",
+                    "checked": true
+                },
+                {
+                    "name": "\u00dc\u00e7\u00fcnc\u00fc S\u0131ra Koltuklar",
+                    "checked": false
+                },
+                {
+                    "name": "Deri Koltuk",
+                    "checked": false
+                },
+                {
+                    "name": "Kuma\u015f Koltuk",
+                    "checked": false
+                },
+                {
+                    "name": "Elektrikli Camlar",
+                    "checked": true
+                },
+                {
+                    "name": "Klima",
+                    "checked": true
+                },
+                {
+                    "name": "Otm.Kararan Dikiz Aynas\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "\u00d6n G\u00f6r\u00fc\u015f Kameras\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "\u00d6n Koltuk Kol Dayamas\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Anahtars\u0131z Giri\u015f ve \u00c7al\u0131\u015ft\u0131rma",
+                    "checked": false
+                },
+                {
+                    "name": "Fonksiyonel Direksiyon",
+                    "checked": false
+                },
+                {
+                    "name": "Is\u0131tmal\u0131 Direksiyon",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Elektrikli)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Haf\u0131zal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Is\u0131tmal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (So\u011futmal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "H\u0131z Sabitleme Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "So\u011futmal\u0131 Torpido",
+                    "checked": false
+                },
+                {
+                    "name": "Yol Bilgisayar\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Head-up Display",
+                    "checked": false
+                },
+                {
+                    "name": "Start / Stop",
+                    "checked": false
+                },
+                {
+                    "name": "Geri G\u00f6r\u00fc\u015f Kameras\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Hidrolik Direksiyon - H\u0131za Duyarl\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Start/Stop",
+                    "checked": true
+                },
+                {
+                    "name": "Konfor",
+                    "checked": false
+                },
+                {
+                    "name": "Smart Card / Smart Key",
+                    "checked": false
+                }
+            ],
+            "dis_donanim": [
+                {
+                    "name": "Ayakla A\u00e7\u0131lan Bagaj Kapa\u011f\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Hardtop",
+                    "checked": false
+                },
+                {
+                    "name": "Far (Adaptif)",
+                    "checked": false
+                },
+                {
+                    "name": "Aynalar (Elektrikli)",
+                    "checked": true
+                },
+                {
+                    "name": "Aynalar (Is\u0131tmal\u0131)",
+                    "checked": true
+                },
+                {
+                    "name": "Aynalar (Haf\u0131zal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Park Sens\u00f6r\u00fc (Arka)",
+                    "checked": true
+                },
+                {
+                    "name": "Park Sens\u00f6r\u00fc (\u00d6n)",
+                    "checked": false
+                },
+                {
+                    "name": "Park Asistan\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Sunroof",
+                    "checked": false
+                },
+                {
+                    "name": "Ak\u0131ll\u0131 Bagaj Kapa\u011f\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Panoramik Cam Tavan",
+                    "checked": false
+                },
+                {
+                    "name": "R\u00f6mork \u00c7eki Demiri",
+                    "checked": false
+                },
+                {
+                    "name": "Yan Aynalar - Is\u0131tmal\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Yan Aynalar - Otomatik Kararan",
+                    "checked": true
+                },
+                {
+                    "name": "Cam Tavan",
+                    "checked": false
+                }
+            ],
+            "multimedya": [
+                {
+                    "name": "Android Auto",
+                    "checked": false
+                },
+                {
+                    "name": "Apple CarPlay",
+                    "checked": false
+                },
+                {
+                    "name": "Bluetooth",
+                    "checked": false
+                },
+                {
+                    "name": "USB / AUX",
+                    "checked": true
+                },
+                {
+                    "name": "Amfi / Ses Sistemi",
+                    "checked": false
+                }
+            ]
+        },
+        "year": "2025",
+        "km": "250",
+        "fuel": "dizel",
+        "gear": "otomatik"
+    },
+    {
+        "url": "https://www.sahibinden.com/ilan/vasita-otomobil-audi-30-pesinat-12-24-36-ay-vadeli-senetli-temiz-audi-a1-1262100647/detay",
+        "success": true,
+        "title": "www.sahibinden.com",
+        "price": "929.750 TL",
+        "location": {
+            "city": "\u0130stanbul",
+            "district": "Ata\u015fehir",
+            "neighborhood": "\u0130\u00e7erenk\u00f6y Mh.",
+            "full_address": "\u0130stanbul / Ata\u015fehir / \u0130\u00e7erenk\u00f6y Mh."
+        },
+        "specs": {
+            "\u0130lan No": "1262100647",
+            "\u0130lan Tarihi": "31 Temmuz 2025",
+            "Marka": "Audi",
+            "Seri": "A1",
+            "Model": "1.6 TDI Ambition",
+            "Y\u0131l": "2013",
+            "Yak\u0131t Tipi": "Dizel",
+            "Vites": "Otomatik",
+            "vehicleCondition": "\u0130kinci El",
+            "KM": "194.000",
+            "Kasa Tipi": "Hatchback 5 kap\u0131",
+            "Motor G\u00fcc\u00fc": "90 hp",
+            "Motor Hacmi": "1598 cc",
+            "\u00c7eki\u015f": "\u00d6nden \u00c7eki\u015f",
+            "Renk": "Beyaz",
+            "Garanti": "Hay\u0131r",
+            "A\u011f\u0131r Hasar Kay\u0131tl\u0131": "Hay\u0131r",
+            "Plaka / Uyruk": "T\u00fcrkiye (TR) Plakal\u0131",
+            "Kimden": "Galeriden",
+            "Takas": "Hay\u0131r"
+        },
+        "paint_damage": {
+            "painted_parts": [
+                "Motor Kaputu",
+                "Sa\u011f \u00d6n Kap\u0131",
+                "Sa\u011f Arka \u00c7amurluk",
+                "Sol Arka \u00c7amurluk"
+            ],
+            "changed_parts": [
+                "Sa\u011f \u00d6n \u00c7amurluk"
+            ],
+            "damage_areas": {
+                "front bumper": "Original",
+                "front hood": "Boyal\u0131",
+                "roof": "Original",
+                "front right mudguard": "De\u011fi\u015fen",
+                "front right door": "Boyal\u0131",
+                "rear right door": "Original",
+                "rear right mudguard": "Boyal\u0131",
+                "front left mudguard": "Original",
+                "front left door": "Original",
+                "rear left door": "Original",
+                "rear left mudguard": "Boyal\u0131",
+                "rear hood": "Original",
+                "rear bumper": "Original"
+            }
+        },
+        "features": {
+            "guvenlik": [
+                {
+                    "name": "ABS",
+                    "checked": true
+                },
+                {
+                    "name": "AEB",
+                    "checked": false
+                },
+                {
+                    "name": "BAS",
+                    "checked": false
+                },
+                {
+                    "name": "\u00c7ocuk Kilidi",
+                    "checked": false
+                },
+                {
+                    "name": "Distronic",
+                    "checked": false
+                },
+                {
+                    "name": "ESP / VSA",
+                    "checked": true
+                },
+                {
+                    "name": "Gece G\u00f6r\u00fc\u015f Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Hava Yast\u0131\u011f\u0131 (S\u00fcr\u00fcc\u00fc)",
+                    "checked": true
+                },
+                {
+                    "name": "Hava Yast\u0131\u011f\u0131 (Yolcu)",
+                    "checked": true
+                },
+                {
+                    "name": "Immobilizer",
+                    "checked": true
+                },
+                {
+                    "name": "Isofix",
+                    "checked": true
+                },
+                {
+                    "name": "K\u00f6r Nokta Uyar\u0131 Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Merkezi Kilit",
+                    "checked": true
+                },
+                {
+                    "name": "\u015eerit Takip Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Yoku\u015f Kalk\u0131\u015f Deste\u011fi",
+                    "checked": true
+                },
+                {
+                    "name": "Yorgunluk Tespit Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Z\u0131rhl\u0131 Ara\u00e7",
+                    "checked": false
+                },
+                {
+                    "name": "ESP (Denge Kontrol\u00fc)",
+                    "checked": true
+                },
+                {
+                    "name": "Yoku\u015fta Kalk\u0131\u015f Deste\u011fi",
+                    "checked": true
+                },
+                {
+                    "name": "Yolcu Hava Yast\u0131\u011f\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "S\u00fcr\u00fcc\u00fc Hava Yast\u0131\u011f\u0131",
+                    "checked": true
+                }
+            ],
+            "ic_donanim": [
+                {
+                    "name": "Hidrolik Direksiyon",
+                    "checked": false
+                },
+                {
+                    "name": "\u00dc\u00e7\u00fcnc\u00fc S\u0131ra Koltuklar",
+                    "checked": false
+                },
+                {
+                    "name": "Deri Koltuk",
+                    "checked": false
+                },
+                {
+                    "name": "Kuma\u015f Koltuk",
+                    "checked": false
+                },
+                {
+                    "name": "Elektrikli Camlar",
+                    "checked": true
+                },
+                {
+                    "name": "Klima",
+                    "checked": true
+                },
+                {
+                    "name": "Otm.Kararan Dikiz Aynas\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "\u00d6n G\u00f6r\u00fc\u015f Kameras\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "\u00d6n Koltuk Kol Dayamas\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Anahtars\u0131z Giri\u015f ve \u00c7al\u0131\u015ft\u0131rma",
+                    "checked": false
+                },
+                {
+                    "name": "Fonksiyonel Direksiyon",
+                    "checked": false
+                },
+                {
+                    "name": "Is\u0131tmal\u0131 Direksiyon",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Elektrikli)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Haf\u0131zal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Is\u0131tmal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (So\u011futmal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "H\u0131z Sabitleme Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "So\u011futmal\u0131 Torpido",
+                    "checked": false
+                },
+                {
+                    "name": "Yol Bilgisayar\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Head-up Display",
+                    "checked": false
+                },
+                {
+                    "name": "Start / Stop",
+                    "checked": true
+                },
+                {
+                    "name": "Geri G\u00f6r\u00fc\u015f Kameras\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Start/Stop",
+                    "checked": true
+                },
+                {
+                    "name": "Konfor",
+                    "checked": false
+                },
+                {
+                    "name": "Smart Card / Smart Key",
+                    "checked": false
+                }
+            ],
+            "dis_donanim": [
+                {
+                    "name": "Ayakla A\u00e7\u0131lan Bagaj Kapa\u011f\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Hardtop",
+                    "checked": false
+                },
+                {
+                    "name": "Far (Adaptif)",
+                    "checked": false
+                },
+                {
+                    "name": "Aynalar (Elektrikli)",
+                    "checked": true
+                },
+                {
+                    "name": "Aynalar (Is\u0131tmal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Aynalar (Haf\u0131zal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Park Sens\u00f6r\u00fc (Arka)",
+                    "checked": false
+                },
+                {
+                    "name": "Park Sens\u00f6r\u00fc (\u00d6n)",
+                    "checked": false
+                },
+                {
+                    "name": "Park Asistan\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Sunroof",
+                    "checked": false
+                },
+                {
+                    "name": "Ak\u0131ll\u0131 Bagaj Kapa\u011f\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Panoramik Cam Tavan",
+                    "checked": false
+                },
+                {
+                    "name": "R\u00f6mork \u00c7eki Demiri",
+                    "checked": false
+                },
+                {
+                    "name": "Yan Aynalar - Is\u0131tmal\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Cam Tavan",
+                    "checked": false
+                }
+            ],
+            "multimedya": [
+                {
+                    "name": "Android Auto",
+                    "checked": false
+                },
+                {
+                    "name": "Apple CarPlay",
+                    "checked": false
+                },
+                {
+                    "name": "Bluetooth",
+                    "checked": false
+                },
+                {
+                    "name": "USB / AUX",
+                    "checked": true
+                },
+                {
+                    "name": "Navigasyon",
+                    "checked": false
+                },
+                {
+                    "name": "Yol Bilgisayar\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Amfi / Ses Sistemi",
+                    "checked": false
+                }
+            ]
+        },
+        "year": "2025",
+        "fuel": "dizel",
+        "gear": "otomatik"
+    },
+    {
+        "url": "https://www.sahibinden.com/ilan/vasita-otomobil-audi-aradigim-araci-buldugum-icin-acil-satilik-1222320237/detay",
+        "success": true,
+        "title": "ARADI\u011eIM ARACI BULDU\u011eUM \u0130\u00c7\u0130N AC\u0130L SATILIK !!!",
+        "price": "700.000 TL",
+        "location": {
+            "city": "Malatya",
+            "district": "Ye\u015filyurt",
+            "neighborhood": "\u0130n\u00f6n\u00fc Mh.",
+            "full_address": "Malatya / Ye\u015filyurt / \u0130n\u00f6n\u00fc Mh."
+        },
+        "specs": {
+            "\u0130lan No": "1222320237",
+            "\u0130lan Tarihi": "30 Temmuz 2025",
+            "Marka": "Audi",
+            "Seri": "A1",
+            "Model": "1.4 TFSI Ambition",
+            "Y\u0131l": "2011",
+            "Yak\u0131t Tipi": "Benzinli",
+            "Vites": "Otomatik",
+            "vehicleCondition": "\u0130kinci El",
+            "KM": "218.000",
+            "Kasa Tipi": "Hatchback 3 kap\u0131",
+            "Motor G\u00fcc\u00fc": "122 hp",
+            "Motor Hacmi": "1390 cc",
+            "\u00c7eki\u015f": "\u00d6nden \u00c7eki\u015f",
+            "Renk": "K\u0131rm\u0131z\u0131",
+            "Garanti": "Evet",
+            "A\u011f\u0131r Hasar Kay\u0131tl\u0131": "Hay\u0131r",
+            "Plaka / Uyruk": "T\u00fcrkiye (TR) Plakal\u0131",
+            "Kimden": "Sahibinden",
+            "Takas": "Evet"
+        },
+        "paint_damage": {
+            "painted_parts": [
+                "Sol \u00d6n \u00c7amurluk",
+                "\u00d6n Tampon",
+                "Motor Kaputu",
+                "Sa\u011f \u00d6n \u00c7amurluk",
+                "Sa\u011f \u00d6n Kap\u0131",
+                "Sa\u011f Arka \u00c7amurluk",
+                "Arka Tampon"
+            ],
+            "changed_parts": [],
+            "damage_areas": {
+                "front bumper": "Boyal\u0131",
+                "front hood": "Boyal\u0131",
+                "roof": "Original",
+                "front right mudguard": "Boyal\u0131",
+                "front right door": "Boyal\u0131",
+                "rear right door": "Original",
+                "rear right mudguard": "Boyal\u0131",
+                "front left mudguard": "Boyal\u0131",
+                "front left door": "Original",
+                "rear left door": "Original",
+                "rear left mudguard": "Original",
+                "rear hood": "Original",
+                "rear bumper": "Boyal\u0131"
+            }
+        },
+        "features": {
+            "guvenlik": [
+                {
+                    "name": "ABS",
+                    "checked": true
+                },
+                {
+                    "name": "AEB",
+                    "checked": false
+                },
+                {
+                    "name": "BAS",
+                    "checked": false
+                },
+                {
+                    "name": "\u00c7ocuk Kilidi",
+                    "checked": false
+                },
+                {
+                    "name": "Distronic",
+                    "checked": false
+                },
+                {
+                    "name": "ESP / VSA",
+                    "checked": true
+                },
+                {
+                    "name": "Gece G\u00f6r\u00fc\u015f Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Hava Yast\u0131\u011f\u0131 (S\u00fcr\u00fcc\u00fc)",
+                    "checked": true
+                },
+                {
+                    "name": "Hava Yast\u0131\u011f\u0131 (Yolcu)",
+                    "checked": true
+                },
+                {
+                    "name": "Immobilizer",
+                    "checked": true
+                },
+                {
+                    "name": "Isofix",
+                    "checked": true
+                },
+                {
+                    "name": "K\u00f6r Nokta Uyar\u0131 Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Merkezi Kilit",
+                    "checked": true
+                },
+                {
+                    "name": "\u015eerit Takip Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Yoku\u015f Kalk\u0131\u015f Deste\u011fi",
+                    "checked": true
+                },
+                {
+                    "name": "Yorgunluk Tespit Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "Z\u0131rhl\u0131 Ara\u00e7",
+                    "checked": false
+                },
+                {
+                    "name": "ESP (Denge Kontrol\u00fc)",
+                    "checked": true
+                },
+                {
+                    "name": "Yoku\u015fta Kalk\u0131\u015f Deste\u011fi",
+                    "checked": true
+                },
+                {
+                    "name": "Yolcu Hava Yast\u0131\u011f\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "S\u00fcr\u00fcc\u00fc Hava Yast\u0131\u011f\u0131",
+                    "checked": true
+                }
+            ],
+            "ic_donanim": [
+                {
+                    "name": "Hidrolik Direksiyon",
+                    "checked": false
+                },
+                {
+                    "name": "\u00dc\u00e7\u00fcnc\u00fc S\u0131ra Koltuklar",
+                    "checked": false
+                },
+                {
+                    "name": "Deri Koltuk",
+                    "checked": false
+                },
+                {
+                    "name": "Kuma\u015f Koltuk",
+                    "checked": false
+                },
+                {
+                    "name": "Elektrikli Camlar",
+                    "checked": true
+                },
+                {
+                    "name": "Klima",
+                    "checked": true
+                },
+                {
+                    "name": "Otm.Kararan Dikiz Aynas\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "\u00d6n G\u00f6r\u00fc\u015f Kameras\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "\u00d6n Koltuk Kol Dayamas\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Anahtars\u0131z Giri\u015f ve \u00c7al\u0131\u015ft\u0131rma",
+                    "checked": false
+                },
+                {
+                    "name": "Fonksiyonel Direksiyon",
+                    "checked": false
+                },
+                {
+                    "name": "Is\u0131tmal\u0131 Direksiyon",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Elektrikli)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Haf\u0131zal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (Is\u0131tmal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Koltuklar (So\u011futmal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "H\u0131z Sabitleme Sistemi",
+                    "checked": false
+                },
+                {
+                    "name": "So\u011futmal\u0131 Torpido",
+                    "checked": false
+                },
+                {
+                    "name": "Yol Bilgisayar\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Head-up Display",
+                    "checked": false
+                },
+                {
+                    "name": "Start / Stop",
+                    "checked": true
+                },
+                {
+                    "name": "Geri G\u00f6r\u00fc\u015f Kameras\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Start/Stop",
+                    "checked": true
+                },
+                {
+                    "name": "Konfor",
+                    "checked": false
+                },
+                {
+                    "name": "Smart Card / Smart Key",
+                    "checked": false
+                }
+            ],
+            "dis_donanim": [
+                {
+                    "name": "Ayakla A\u00e7\u0131lan Bagaj Kapa\u011f\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Hardtop",
+                    "checked": false
+                },
+                {
+                    "name": "Far (Adaptif)",
+                    "checked": false
+                },
+                {
+                    "name": "Aynalar (Elektrikli)",
+                    "checked": true
+                },
+                {
+                    "name": "Aynalar (Is\u0131tmal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Aynalar (Haf\u0131zal\u0131)",
+                    "checked": false
+                },
+                {
+                    "name": "Park Sens\u00f6r\u00fc (Arka)",
+                    "checked": false
+                },
+                {
+                    "name": "Park Sens\u00f6r\u00fc (\u00d6n)",
+                    "checked": false
+                },
+                {
+                    "name": "Park Asistan\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Sunroof",
+                    "checked": false
+                },
+                {
+                    "name": "Ak\u0131ll\u0131 Bagaj Kapa\u011f\u0131",
+                    "checked": false
+                },
+                {
+                    "name": "Panoramik Cam Tavan",
+                    "checked": false
+                },
+                {
+                    "name": "R\u00f6mork \u00c7eki Demiri",
+                    "checked": false
+                },
+                {
+                    "name": "Yan Aynalar - Is\u0131tmal\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Cam Tavan",
+                    "checked": false
+                }
+            ],
+            "multimedya": [
+                {
+                    "name": "Android Auto",
+                    "checked": false
+                },
+                {
+                    "name": "Apple CarPlay",
+                    "checked": false
+                },
+                {
+                    "name": "Bluetooth",
+                    "checked": false
+                },
+                {
+                    "name": "USB / AUX",
+                    "checked": true
+                },
+                {
+                    "name": "Navigasyon",
+                    "checked": false
+                },
+                {
+                    "name": "Yol Bilgisayar\u0131",
+                    "checked": true
+                },
+                {
+                    "name": "Amfi / Ses Sistemi",
+                    "checked": false
+                }
+            ]
+        },
+        "year": "2025",
+        "fuel": "benzin",
+        "gear": "otomatik"
+    }
+]
