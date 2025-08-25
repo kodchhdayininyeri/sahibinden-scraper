@@ -42,7 +42,7 @@ Chrome extension for efficient URL extraction from listing pages
 
 ##  Technical Challenges Solved
 
-1. **Cloudflare Bypass**: Implemented mobile proxy rotation with residential IPs
+1. **Cloudflare Bypass**: Implemented mobile proxy rotation with mobile IPs
 2. **Rate Limiting**: Distributed load across multiple instances with intelligent delays
 3. **Data Consistency**: Robust parsing system with multiple fallback methods
 4. **Scale Management**: Handled 10K+ URLs with batch processing and auto-restart mechanisms
@@ -54,7 +54,7 @@ Chrome extension for efficient URL extraction from listing pages
 **Scraping**: Python, SeleniumBase, Chrome Extensions  
 **Frontend**: HTML5, Tailwind CSS, JavaScript  
 **Infrastructure**: Docker, Render.com, GitHub  
-**Proxies**: SOAX Mobile, NodeMaven Residential
+**Proxies**: SOAX Mobile, NodeMaven Mobile
 
 ##  Performance Metrics
 
