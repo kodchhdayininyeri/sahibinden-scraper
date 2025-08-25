@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Sahibinden URL Extractor",
+  "version": "1.0",
+  "description": "Sahibinden.com ilan URL'lerini toplar",
+  
+  "permissions": [
+    "activeTab",
+    "storage", 
+    "downloads",
+    "scripting",
+    "tabs"
+  ],
+  
+  "host_permissions": [
+    "*://*.sahibinden.com/*"
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["*://*.sahibinden.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

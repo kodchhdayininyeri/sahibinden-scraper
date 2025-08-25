@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 400px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 5px 0;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    #extractBtn {
+      background: #4CAF50;
+      color: white;
+    }
+    #extractBtn:hover {
+      background: #45a049;
+    }
+    #downloadBtn {
+      background: #2196F3;
+      color: white;
+    }
+    #downloadBtn:hover {
+      background: #0b7dda;
+    }
+    #copyBtn {
+      background: #FF9800;
+      color: white;
+    }
+    #copyBtn:hover {
+      background: #e68900;
+    }
+    #clearBtn {
+      background: #f44336;
+      color: white;
+    }
+    #clearBtn:hover {
+      background: #da190b;
+    }
+    #status {
+      margin: 10px 0;
+      padding: 10px;
+      background: #f0f0f0;
+      border-radius: 5px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .count {
+      font-weight: bold;
+      color: #4CAF50;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin: 10px 0;
+      font-size: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 5px;
+    }
+    h3 {
+      margin: 0 0 15px 0;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h3>🔗 Sahibinden URL Extractor</h3>
+  
+  <button id="extractBtn">📊 Bu Sayfadan URL'leri Çek</button>
+  <button id="clearBtn">🗑️ Hafızayı Temizle</button>
+  
+  <div id="status">
+    <div>Hazır - Butona tıklayın</div>
+  </div>
+  
+  <textarea id="urlList" placeholder="URL'ler burada görünecek..." readonly></textarea>
+  
+  <button id="downloadBtn" style="display:none">💾 TXT Olarak İndir</button>
+  <button id="copyBtn" style="display:none">📋 Kopyala</button>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
