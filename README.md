@@ -83,11 +83,6 @@ car-analyzer-table.html - Frontend arayüzü
 - Her instance farklı proxy kullanarak dağıtık veri toplama
 - Otomatik yeniden başlatma ile kesintisiz operasyon
 
-### Performans
-- Saatte ~200 araç verisi toplama kapasitesi
-- %85+ başarı oranı bot korumasına rağmen
-- Ortalama sorgu yanıt süresi <100ms (web uygulaması)
-
 ## Canlı Demo
 https://ozsahibinden-backend.onrender.com
 
