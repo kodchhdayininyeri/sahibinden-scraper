@@ -78,6 +78,15 @@ car-analyzer-table.html - Frontend arayüzü
 - **Mobil Proxy Rotasyonu**: SOAX ve NodeMaven servisleri ile IP çeşitliliği
 - **Cookie Temizleme**: Bot tespiti durumunda devreye giren yardımcı sistem
 
+ ### Kullanılan Teknolojiler
+  **Backend:** Node.js, Express.js, PostgreSQL
+  **Frontend:** HTML5, Tailwind CSS, Vanilla JavaScript
+  **Scraping:** Python, SeleniumBase, BeautifulSoup
+  **DevOps:** Render.com deployment, Multi-instance architecture
+  **Database:** PostgreSQL optimization, JSON storage
+  **Networking:** Proxy rotation, Anti-detection systems
+
+
 ### Scraping Mimarisi
 - 2 PC'de paralel çalışan 5 scraper instance'ı
 - Her instance farklı proxy kullanarak dağıtık veri toplama
