@@ -59,7 +59,6 @@ Chrome extension for efficient URL extraction from listing pages
 ##  Performance Metrics
 
 - Query Response: <100ms average
-- Scraping Speed: ~200 cars/hour
 - Database Size: 8,865 records
 - Uptime: 99.9% on production
 - Parallel Capacity: 5 concurrent scrapers
