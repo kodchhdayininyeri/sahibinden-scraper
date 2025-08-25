@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .option-box {
+      background: rgba(255,255,255,0.15);
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .option-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 0;
+    }
+    .option-label {
+      font-size: 14px;
+    }
+    .warning {
+      background: rgba(255, 243, 205, 0.9);
+      color: #856404;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin: 10px 0;
+      border-left: 4px solid #ffc107;
+    }
+    .toggle {
+      position: relative;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .3s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    .site-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 8px;
+    }
+    .site-item {
+      padding: 10px;
+      background: rgba(255,255,255,0.15);
+      margin: 5px 0;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .site-name {
+      font-size: 14px;
+    }
+    .remove-btn {
+      background: #ff4757;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.2s;
+    }
+    .remove-btn:hover {
+      background: #ff1744;
+    }
+    .add-site {
+      margin-top: 15px;
+      display: flex;
+      gap: 5px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+      font-size: 14px;
+    }
+    .add-btn, .clear-now-btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .add-btn:hover, .clear-now-btn:hover {
+      background: #45a049;
+    }
+    .clear-now-btn {
+      width: 100%;
+      margin-top: 10px;
+      background: #2196F3;
+    }
+    .clear-now-btn:hover {
+      background: #1976D2;
+    }
+    .status {
+      margin-top: 10px;
+      padding: 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 6px;
+      font-size: 12px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.3);
+      display: none;
+    }
+    .status.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h2>🍪 Cookie Temizleyici Pro</h2>
+  
+  <div class="option-box">
+    <div class="option-row">
+      <span class="option-label">cf_clearance'ı da sil</span>
+      <label class="toggle">
+        <input type="checkbox" id="cloudflareToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  
+  <div class="warning">
+    ⚠️ <strong>cf_clearance silinirse:</strong><br>
+    • Cloudflare korumalı sitelerde CAPTCHA görebilirsiniz<br>
+    • Site sizi bot sanabilir<br>
+    • Geçici erişim sorunları yaşayabilirsiniz
+  </div>
+  
+  <div class="option-box">
+    <strong style="font-size: 14px;">Otomatik temizlenecek siteler:</strong>
+    <div class="site-list" id="siteList"></div>
+    <div class="add-site">
+      <input type="text" id="newSite" placeholder="örn: sahibinden.com">
+      <button class="add-btn" id="addBtn">Ekle</button>
+    </div>
+  </div>
+  
+  <button class="clear-now-btn" id="clearNowBtn">
+    🧹 Bu Siteyi Şimdi Temizle
+  </button>
+  
+  <button class="clear-now-btn" id="manualClean" style="background: #ff4757; margin-top: 5px;">
+    🔥 Sahibinden.com Cookie'lerini SİL
+  </button>
+  
+  <button class="clear-now-btn" id="continuousBtn" style="background: #27ae60; margin-top: 5px;">
+    ♻️ Sürekli Temizleme: KAPALI
+  </button>
+  
+  <div style="border-top: 1px solid rgba(255,255,255,0.3); margin-top: 15px; padding-top: 15px;">
+    <h3 style="margin: 0 0 10px 0; font-size: 14px; text-align: center;">🤖 Scraper Kontrolleri</h3>
+    
+    <button class="clear-now-btn" id="scraperInjectBtn" style="background: #9b59b6; margin-top: 5px;">
+      🚀 Manuel Scraper Başlat
+    </button>
+    
+    <button class="clear-now-btn" id="exportResultsBtn" style="background: #f39c12; margin-top: 5px;">
+      📥 Sonuçları İndir (<span id="resultCount">0</span>)
+    </button>
+    
+    <button class="clear-now-btn" id="clearResultsBtn" style="background: #e74c3c; margin-top: 5px;">
+      🗑️ Sonuçları Temizle
+    </button>
+  </div>
+  
+  <div style="border-top: 1px solid rgba(255,255,255,0.3); margin-top: 15px; padding-top: 15px;">
+    <h3 style="margin: 0 0 10px 0; font-size: 14px; text-align: center;">🐍 Botasaurus Python Scraper</h3>
+    
+    <button class="clear-now-btn" id="botasaurusStatusBtn" style="background: #3498db; margin-top: 5px;">
+      📡 Server Durumunu Kontrol Et
+    </button>
+    
+    <button class="clear-now-btn" id="botasaurusRunBtn" style="background: #e67e22; margin-top: 5px;">
+      🚀 Botasaurus Scraper Çalıştır
+    </button>
+    
+    <div id="botasaurusStatus" style="margin-top: 10px; font-size: 12px; padding: 5px; background: rgba(0,0,0,0.2); border-radius: 4px; display: none;"></div>
+  </div>
+  
+  <div class="status" id="status"></div>
+  
+  <script src="forceClear.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
